@@ -63,7 +63,6 @@ import { formatDate } from './modules/formatter.js';
             // Determinamos el layout CSS
             const layoutClass = isHorizontal ? 'dtp-layout-horizontal' : 'dtp-layout-vertical';
 
-            // --- DEFINICIÓN DE LA VARIABLE QUE FALTABA ---
             let maxCardWidth = '340px';
             if (isHorizontal) {
                 maxCardWidth = settings.doubleMonth ? '960px' : '650px';
@@ -105,7 +104,7 @@ import { formatDate } from './modules/formatter.js';
                 </div>
             `);
 
-            // --- CORRECCIÓN CRÍTICA 1: OBTENCIÓN DE NODOS INTERNOS DEL DOM ---
+            // --- OBTENCIÓN DE NODOS INTERNOS DEL DOM ---
             const $bdayContainer = $card.find('.dtp-birthday-section');
             const $calContainer = $card.find('.dtp-calendar-section');
             const $clockContainer = $card.find('.dtp-clock-section');
@@ -144,7 +143,7 @@ import { formatDate } from './modules/formatter.js';
                 isOpen = true;
             }
 
-            // --- CORRECCIÓN CRÍTICA 2: DESTRUCCIÓN SEGURA DE INSTANCIA ---
+            // --- DESTRUCCIÓN SEGURA DE INSTANCIA ---
             const destroyPicker = () => {
                 if (isInput) {
                     $target.off('.dtp');
