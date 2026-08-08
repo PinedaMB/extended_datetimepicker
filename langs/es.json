@@ -1,0 +1,70 @@
+{
+    "code": "es",
+    "calendar": {
+        "months": [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre"
+        ],
+        "monthsShort": [
+            "Ene",
+            "Feb",
+            "Mar",
+            "Abr",
+            "May",
+            "Jun",
+            "Jul",
+            "Ago",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dic"
+        ],
+        "weekdays": [
+            "Domingo",
+            "Lunes",
+            "Martes",
+            "Miércoles",
+            "Jueves",
+            "Viernes",
+            "Sábado"
+        ],
+        "weekdaysShort": [
+            "Do",
+            "Lu",
+            "Ma",
+            "Mi",
+            "Ju",
+            "Vi",
+            "Sá"
+        ],
+        "rangeSeparator": "a"
+    },
+    "clock": {
+        "title": "Reloj",
+        "hour": "Hora",
+        "minute": "Minuto",
+        "ampm": "AM / PM"
+    },
+    "birthday": {
+        "title": "Fecha de Nacimiento",
+        "day": "Día",
+        "month": "Mes",
+        "year": "Año"
+    },
+    "actions": {
+        "today": "Hoy",
+        "now": "Ahora",
+        "clear": "Limpiar",
+        "done": "Aceptar"
+    }
+}

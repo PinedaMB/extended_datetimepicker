@@ -1,0 +1,37 @@
+{
+  "name": "jquery-extended-datetimepicker",
+  "version": "1.0.0",
+  "description": "A modern, modular jQuery DateTimePicker plugin with Bootstrap 5 integration, range selection, dual month view, and birthday mode.",
+  "main": "dist/jquery.extended.datetimepicker.min.js",
+  "style": "dist/jquery.extended.datetimepicker.min.css",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c && npm run copy:docs",
+    "copy:docs": "copyfiles -u 1 dist/* docs/"
+  },
+  "keywords": [
+    "jquery-plugin",
+    "bootstrap5",
+    "datetimepicker",
+    "datepicker",
+    "timepicker",
+    "birthday-picker",
+    "range-picker"
+  ],
+  "author": "Brayan Pineda Méndez <mendez-pineda@outlook.es>",
+  "license": "MIT",
+  "peerDependencies": {
+    "bootstrap": ">=5.0.0",
+    "jquery": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "copyfiles": "^2.4.1",
+    "rollup": "^4.0.0",
+    "rollup-plugin-postcss": "^4.0.2"
+  }
+}

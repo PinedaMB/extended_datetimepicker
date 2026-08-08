@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Meta Tags SEO -->
+    <title>Extended DateTimePicker - Plugin de Fecha y Hora para jQuery y Bootstrap 5</title>
+    <meta name="description"
+        content="Un plugin de jQuery potente, ligero y altamente personalizable para selección de fecha y hora, totalmente integrado con Bootstrap 5, soporte para rango, cumpleaños y tema oscuro.">
+    <meta name="keywords"
+        content="jquery plugin, datetimepicker, datepicker, bootstrap 5, timepicker, javascript datepicker, range picker, birthday picker">
+    <meta name="author" content="Extended DateTimePicker">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Extended DateTimePicker - Componente jQuery & Bootstrap 5">
+    <meta property="og:description"
+        content="Seleccionador de fecha y hora interactivo con soporte para rangos, vista doble mes, selector de cumpleaños y modo oscuro.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f4c5.png">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Extended DateTimePicker - Componente jQuery & Bootstrap 5">
+    <meta name="twitter:description"
+        content="Seleccionador de fecha y hora interactivo con soporte para rangos, vista doble mes, selector de cumpleaños y modo oscuro.">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Estilos del Plugin -->
+    <link rel="stylesheet" href="./jquery.extended.datetimepicker.min.css">
+
+    <style>
+        .demo-card {
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .fs-7 {
+            font-size: 0.875rem;
+        }
+
+        #picker-inline {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body class="bg-body-tertiary text-body d-flex flex-column min-vh-100">
+
+    <div class="container flex-grow-1">
+        <div class="card shadow-sm demo-card">
+            <div class="card-header bg-body-secondary py-3 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-bold">Extended DateTimePicker - Playground & Documentación</h4>
+            </div>
+            <div class="card-body p-4">
+
+                <!-- Panel de Configuración Interactiva -->
+                <form id="picker-config-form" class="row g-3 mb-4 p-3 bg-body-tertiary rounded-3 border">
+                    <h6 class="fw-bold mb-2 text-primary">Probar Configuración</h6>
+
+                    <!-- Modo -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-mode">Modo (`mode`)</label>
+                        <select id="cfg-mode" class="form-select form-select-sm">
+                            <option value="single" selected>Single</option>
+                            <option value="range">Range</option>
+                            <option value="multiple">Multiple</option>
+                            <option value="birthday">Birthday</option>
+                        </select>
+                    </div>
+
+                    <!-- Tema de Color del Plugin -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-theme">Tema (`themeColor`)</label>
+                        <select id="cfg-theme" class="form-select form-select-sm">
+                            <option value="success" selected>Success (Verde)</option>
+                            <option value="primary">Primary (Azul)</option>
+                            <option value="danger">Danger (Rojo)</option>
+                            <option value="warning">Warning (Amarillo)</option>
+                        </select>
+                    </div>
+
+                    <!-- Color Mode Bootstrap -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-colormode">Modo Bootstrap
+                            (`data-bs-theme`)</label>
+                        <select id="cfg-colormode" class="form-select form-select-sm">
+                            <option value="light" selected>Light ☀️</option>
+                            <option value="dark">Dark 🌙</option>
+                        </select>
+                    </div>
+
+                    <!-- Idioma -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-lang">Idioma (`lang`)</label>
+                        <select id="cfg-lang" class="form-select form-select-sm">
+                            <option value="es" selected>Español ('es')</option>
+                            <option value="en">Inglés ('en')</option>
+                        </select>
+                    </div>
+
+                    <!-- Diseño -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-layout">Layout (`layout`)</label>
+                        <select id="cfg-layout" class="form-select form-select-sm">
+                            <option value="vertical" selected>Vertical</option>
+                            <option value="horizontal">Horizontal</option>
+                        </select>
+                    </div>
+
+                    <!-- Formato de Fecha -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-dateformat">Formato de Fecha
+                            (`dateFormat`)</label>
+                        <select class="form-select form-select-sm" id="cfg-dateformat">
+                            <option value="YYYY-MM-DD" selected>YYYY-MM-DD</option>
+                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                        </select>
+                    </div>
+
+                    <!-- Deshabilitar fechas -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-disabledates">Fechas Deshabilitadas
+                            (`disabledDates`)</label>
+                        <input type="text" class="form-control form-control-sm" id="cfg-disabledates"
+                            placeholder="YYYY-MM-DD,YYYY-MM-DD,...">
+                    </div>
+
+                    <!-- Switches y Flags -->
+                    <div class="col-12 d-flex flex-wrap gap-4 pt-2">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cfg-showcalendar" checked>
+                            <label class="form-check-label fs-7 fw-medium" for="cfg-showcalendar">Ver Calendario
+                                (`showCalendar`)</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cfg-showclock" checked>
+                            <label class="form-check-label fs-7 fw-medium" for="cfg-showclock">Ver Reloj
+                                (`showClock`)</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cfg-doublemonth">
+                            <label class="form-check-label fs-7 fw-medium" for="cfg-doublemonth">Doble Mes
+                                (`doubleMonth`)</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cfg-format24h" checked>
+                            <label class="form-check-label fs-7 fw-medium" for="cfg-format24h">Formato 24h
+                                (`format24h`)</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cfg-disableWeekends">
+                            <label class="form-check-label fs-7 fw-medium" for="cfg-disableWeekends">Deshabilitar Fines
+                                de Semana
+                                (`disableWeekends`)</label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-end mt-3">
+                        <button type="button" id="btn-reinit" class="btn btn-primary btn-sm px-4 fw-semibold">
+                            Aplicar Configuración
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Demos de Instanciación -->
+                <div class="row g-4">
+                    <!-- Columna 1: Input -->
+                    <div class="col-12 col-lg-6">
+                        <h5 class="fw-bold">1. Instancia sobre un &lt;input&gt;</h5>
+                        <input type="text" id="picker-input" class="form-control"
+                            placeholder="Seleccionar fecha u hora...">
+                    </div>
+
+                    <!-- Columna 2: Div Incrustado -->
+                    <div class="col-12 col-lg-6">
+                        <h5 class="fw-bold">2. Instancia sobre un &lt;div&gt;</h5>
+                        <div id="picker-inline"></div>
+                    </div>
+                </div>
+
+                <!-- Consola de Eventos -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <label class="form-label fw-bold" for="demo-console">Consola de Eventos (Output):</label>
+                        <textarea id="demo-console" class="form-control font-monospace fs-7 bg-dark text-success"
+                            rows="3" readonly>-- Esperando eventos --&#10;</textarea>
+                    </div>
+                </div>
+
+                <hr class="my-5">
+
+                <!-- DOCUMENTACIÓN Y API -->
+                <section>
+                    <h3 class="fw-bold mb-4 text-primary">Documentación Técnica de la API</h3>
+
+                    <!-- Comportamiento de Elementos Destino -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold">Soporte de Elementos Destino</h5>
+                        <p class="fs-7 text-body-secondary">
+                            El plugin detecta automáticamente la etiqueta del selector sobre el cual es invocado:
+                        </p>
+                        <ul>
+                            <li class="fs-7"><strong>Si es un <code>&lt;input&gt;</code>:</strong> Se comporta como un
+                                desplegable emergente (dropdown) posicionado dinámicamente bajo el campo de texto.</li>
+                            <li class="fs-7"><strong>Si es un <code>&lt;div&gt;</code> o contenedor genérico:</strong>
+                                Se renderiza directamente en el DOM en modo estático (inline), mostrándose completo y
+                                visible de inmediato.</li>
+                        </ul>
+                    </div>
+
+                    <!-- TABLA DE OPCIONES DE CONFIGURACIÓN -->
+                    <div class="mb-5">
+                        <h5 class="fw-bold mb-3">Atributos y Opciones de Configuración (`options`)</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered align-middle fs-7">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Opción</th>
+                                        <th>Tipo</th>
+                                        <th>Valor por Defecto</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>mode</code></td>
+                                        <td><span class="badge bg-secondary">String</span></td>
+                                        <td><code>'single'</code></td>
+                                        <td>Modo de selección del calendario: <code>'single'</code>,
+                                            <code>'range'</code>, <code>'multiple'</code> o <code>'birthday'</code>.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>layout</code></td>
+                                        <td><span class="badge bg-secondary">String</span></td>
+                                        <td><code>'vertical'</code></td>
+                                        <td>Orientación visual del componente cuando coexisten calendario y reloj:
+                                            <code>'vertical'</code> u <code>'horizontal'</code>.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>themeColor</code></td>
+                                        <td><span class="badge bg-secondary">String</span></td>
+                                        <td><code>'success'</code></td>
+                                        <td>Tema de color Bootstrap asignado a los días activos y botones:
+                                            <code>'success'</code>, <code>'primary'</code>, <code>'danger'</code> o
+                                            <code>'warning'</code>.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>lang</code></td>
+                                        <td><span class="badge bg-secondary">String | Object</span></td>
+                                        <td><code>'es'</code></td>
+                                        <td>Idioma del plugin. Acepta código de idioma en cadena (<code>'es'</code>,
+                                            <code>'en'</code>) o un objeto i18n personalizado.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>showCalendar</code></td>
+                                        <td><span class="badge bg-secondary">Boolean</span></td>
+                                        <td><code>true</code></td>
+                                        <td>Muestra u oculta la sección del calendario.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>showClock</code></td>
+                                        <td><span class="badge bg-secondary">Boolean</span></td>
+                                        <td><code>true</code></td>
+                                        <td>Muestra u oculta la sección del selector de hora (Reloj).</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>doubleMonth</code></td>
+                                        <td><span class="badge bg-secondary">Boolean</span></td>
+                                        <td><code>false</code></td>
+                                        <td>Habilita la vista continua de dos meses paralelos (útil en modo
+                                            <code>'range'</code>).
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>format24h</code></td>
+                                        <td><span class="badge bg-secondary">Boolean</span></td>
+                                        <td><code>true</code></td>
+                                        <td>Formato del reloj: <code>true</code> para 24 horas (00-23) o
+                                            <code>false</code> para 12 horas con indicador AM/PM.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>dateFormat</code></td>
+                                        <td><span class="badge bg-secondary">String</span></td>
+                                        <td><code>'YYYY-MM-DD'</code></td>
+                                        <td>Patrón de formateo para el valor del input. Ejemplos:
+                                            <code>'YYYY-MM-DD'</code>, <code>'DD/MM/YYYY'</code>,
+                                            <code>'MM/DD/YYYY'</code>.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>minDate</code> / <code>maxDate</code></td>
+                                        <td><span class="badge bg-secondary">String | Date</span></td>
+                                        <td><code>null</code></td>
+                                        <td>Limita el rango de fechas seleccionables en el calendario.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>disableWeekends</code></td>
+                                        <td><span class="badge bg-secondary">Boolean</span></td>
+                                        <td><code>false</code></td>
+                                        <td>Deshabilita automáticamente los días Sábado y Domingo.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>disabledDates</code></td>
+                                        <td><span class="badge bg-secondary">Array</span></td>
+                                        <td><code>[]</code></td>
+                                        <td>Lista de fechas específicas deshabilitadas en formato
+                                            <code>'YYYY-MM-DD'</code>.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MÉTODOS PÚBLICOS -->
+                    <div class="mb-5">
+                        <h5 class="fw-bold mb-3">Métodos Públicos</h5>
+                        <p class="fs-7 text-body-secondary">Puedes invocar métodos pasando el nombre de la acción como
+                            cadena de texto al plugin:</p>
+
+                        <div class="row g-3 fs-7">
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 bg-body-tertiary">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold text-primary">open</h6>
+                                        <p class="mb-2">Abre manualmente el cuadro desplegable en elementos
+                                            <code>&lt;input&gt;</code>.
+                                        </p>
+                                        <pre
+                                            class="bg-dark text-white p-2 rounded"><code>$('#picker-input').extendedDateTimePicker('open');</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 bg-body-tertiary">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold text-primary">close</h6>
+                                        <p class="mb-2">Cierra el cuadro desplegable activo.</p>
+                                        <pre
+                                            class="bg-dark text-white p-2 rounded"><code>$('#picker-input').extendedDateTimePicker('close');</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 bg-body-tertiary">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold text-primary">destroy</h6>
+                                        <p class="mb-2">Destruye la instancia, elimina event listeners y restaura el DOM
+                                            original.</p>
+                                        <pre
+                                            class="bg-dark text-white p-2 rounded"><code>$('#picker-input').extendedDateTimePicker('destroy');</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CALLBACKS Y EVENTOS -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">Callbacks / Eventos</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle fs-7">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Callback</th>
+                                        <th>Parámetros</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>onSelectDate</code></td>
+                                        <td><code>(dateObj, formattedDate)</code></td>
+                                        <td>Se dispara al seleccionar una o más fechas en el calendario. Devuelve el
+                                            objeto <code>Date</code> nativo y la cadena formateada.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>onSelectTime</code></td>
+                                        <td><code>(timeState)</code></td>
+                                        <td>Se dispara al modificar la hora o minutos en el reloj. Devuelve un objeto
+                                            con <code>{ hour, minute, ampm }</code>.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>onOpen</code></td>
+                                        <td><code>()</code></td>
+                                        <td>Se dispara inmediatamente después de desplegar el selector.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>onClose</code></td>
+                                        <td><code>()</code></td>
+                                        <td>Se dispara cuando el selector desplegable se oculta.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-3 bg-body-secondary border-top text-center text-body-secondary fs-7">
+        <div class="container">
+            <p class="mb-1 fw-semibold">jQuery Extended DateTimePicker &copy; 2026</p>
+            <p class="mb-0">Licenciado bajo la Licencia <a href="https://opensource.org/licenses/MIT" target="_blank"
+                    rel="noopener noreferrer" class="text-decoration-none fw-bold">MIT</a>.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <script type="module">
+        import './jquery.extended.datetimepicker.min.js';
+
+        $(document).ready(function () {
+            const $input = $('#picker-input');
+            const $divContainer = $('#picker-inline');
+            const $console = $('#demo-console');
+
+            function logEvent(msg) {
+                const time = new Date().toLocaleTimeString();
+                $console.val(`[${time}] ${msg}\n` + $console.val());
+            }
+
+            // Cambio de tema Bootstrap (Light/Dark)
+            $('#cfg-colormode').on('change', function () {
+                const mode = $(this).val();
+                $('html').attr('data-bs-theme', mode);
+                logEvent(`Modo de color cambiado a: ${mode}`);
+            });
+
+            function initPickers() {
+                const config = {
+                    mode: $('#cfg-mode').val(),
+                    themeColor: $('#cfg-theme').val(),
+                    layout: $('#cfg-layout').val(),
+                    lang: $('#cfg-lang').val(),
+                    showCalendar: $('#cfg-showcalendar').is(':checked'),
+                    showClock: $('#cfg-showclock').is(':checked'),
+                    doubleMonth: $('#cfg-doublemonth').is(':checked'),
+                    format24h: $('#cfg-format24h').is(':checked'),
+                    dateFormat: $('#cfg-dateformat').val(),
+                    disableWeekends: $('#cfg-disableWeekends').is(':checked'),
+                    disabledDates: $('#cfg-disabledates').val()
+                        .split(',')
+                        .map(dateStr => dateStr.trim())
+                        .filter(dateStr => dateStr !== ''),
+                    onSelectDate: function (dateObj, formatted) {
+                        logEvent(`[Fecha seleccionada]: ${JSON.stringify(formatted)}`);
+                    },
+                    onSelectTime: function (timeState) {
+                        logEvent(`[Hora seleccionada]: ${JSON.stringify(timeState)}`);
+                    }
+                };
+
+                // Uso del método público 'destroy' para limpieza antes de re-instanciar
+                $input.extendedDateTimePicker('destroy');
+                $input.extendedDateTimePicker(config);
+
+                $divContainer.extendedDateTimePicker('destroy');
+                $divContainer.extendedDateTimePicker(config);
+
+                logEvent('Ambas instancias (Input y Div) re-inicializadas correctamente.');
+            }
+
+            // Evitar submit del formulario
+            $('#picker-config-form').on('submit', function (e) {
+                e.preventDefault();
+            });
+
+            // Re-inicialización limpia al hacer clic en Aplicar Configuración
+            $('#btn-reinit').on('click', function (e) {
+                e.preventDefault();
+                initPickers();
+            });
+
+            // Carga inicial
+            initPickers();
+        });
+    </script>
+</body>
+
+</html>

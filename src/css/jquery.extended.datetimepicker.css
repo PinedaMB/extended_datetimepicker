@@ -1,0 +1,225 @@
+/* jquery.extended.datetimepicker.css */
+.dtp-card {
+    user-select: none;
+    box-sizing: border-box;
+    container-type: inline-size;
+    container-name: dtp-card-container;
+}
+
+/* Permitir que la tarjeta use el ancho programado en su atributo style dinámico */
+.dtp-card:not(.dtp-card-static) {
+    width: auto !important;
+    max-width: none !important;
+    overflow-x: hidden !important;
+    /* Oculta cualquier scroll horizontal forzado */
+}
+
+.dtp-card .card-body {
+    overflow-x: hidden;
+}
+
+.dtp-card.dtp-card-static {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.dtp-card button {
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.dtp-btn-up-hour,
+.dtp-btn-down-hour,
+.dtp-btn-up-minute,
+.dtp-btn-down-minute,
+.dtp-btn-toggle-ampm,
+.dtp-day {
+    cursor: pointer;
+}
+
+.dtp-day:not(.dtp-selected):hover {
+    background-color: var(--bs-tertiary-bg) !important;
+}
+
+/* Envoltura del Input */
+.dtp-input-wrapper {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    /* Permite que el wrapper se adapte si es necesario, o block según tu estructura */
+}
+
+/* --- ESTRUCTURA BASE DEL CUERPO --- */
+.dtp-card-body {
+    display: flex !important;
+    box-sizing: border-box !important;
+    padding: 1rem !important;
+}
+
+/* --- LAYOUT VERTICAL --- */
+.dtp-card.dtp-layout-vertical .dtp-card-body,
+.dtp-layout-vertical .dtp-card-body {
+    flex-direction: column !important;
+}
+
+.dtp-layout-vertical .dtp-clock-section {
+    width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid var(--bs-border-color) !important;
+    margin-top: 1rem !important;
+    padding-top: 1rem !important;
+    padding-left: 0 !important;
+}
+
+/* --- LAYOUT HORIZONTAL --- */
+.dtp-card.dtp-layout-horizontal .dtp-card-body,
+.dtp-layout-horizontal .dtp-card-body {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    gap: 1.5rem !important;
+}
+
+.dtp-layout-horizontal .dtp-clock-section {
+    width: 320px !important;
+    min-width: 280px !important;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    border-top: none !important;
+    border-left: 1px solid var(--bs-border-color) !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    padding-left: 1.25rem !important;
+    box-sizing: border-box !important;
+}
+
+/* --- ESTRUCTURA DE MESES Y CALENDARIO --- */
+.dtp-calendar-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 1.25rem !important;
+    box-sizing: border-box !important;
+}
+
+.dtp-month-container {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0% !important;
+    min-width: 240px !important;
+    box-sizing: border-box !important;
+}
+
+/* Divisor sutil entre el primer y segundo mes */
+.dtp-calendar-wrapper>.dtp-month-container+.dtp-month-container {
+    border-left: 1px solid var(--bs-border-color);
+    padding-left: 1.25rem;
+}
+
+.dtp-days-grid,
+.dtp-weekdays-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 2px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.dtp-day {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dtp-clock-section {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    box-sizing: border-box !important;
+}
+
+
+/* ==========================================================================
+   CONTAINER QUERIES
+   ========================================================================== */
+
+@media (max-width: 680px) {
+
+    /* Forzamos a que la tarjeta flotante o estática se acople al 100% y no rebase la pantalla */
+    .dtp-card:not(.dtp-card-static) {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .dtp-card-body {
+        flex-direction: column !important;
+    }
+
+    .dtp-layout-horizontal .dtp-clock-section,
+    .dtp-clock-section {
+        width: 100% !important;
+        min-width: 100% !important;
+        border-left: none !important;
+        border-top: 1px solid var(--bs-border-color) !important;
+        margin-top: 1rem !important;
+        padding-top: 1rem !important;
+        padding-left: 0 !important;
+    }
+
+    .dtp-calendar-wrapper {
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+    }
+
+    .dtp-month-container {
+        flex: 0 0 100% !important;
+        min-width: 100% !important;
+        scroll-snap-align: start;
+    }
+
+    .dtp-calendar-wrapper>.dtp-month-container+.dtp-month-container {
+        border-left: none !important;
+        padding-left: 0 !important;
+    }
+}
+
+@container dtp-card-container (max-width: 580px) {
+    .dtp-card-body {
+        flex-direction: column !important;
+    }
+
+    .dtp-clock-section {
+        width: 100% !important;
+        border-left: none !important;
+        border-top: 1px solid var(--bs-border-color) !important;
+        margin-top: 1rem !important;
+        padding-top: 1rem !important;
+        padding-left: 0 !important;
+    }
+
+    .dtp-calendar-wrapper {
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+    }
+
+    .dtp-month-container {
+        flex: 0 0 100% !important;
+        min-width: 100% !important;
+        scroll-snap-align: start;
+    }
+
+    .dtp-calendar-wrapper>.dtp-month-container+.dtp-month-container {
+        border-left: none !important;
+        padding-left: 0 !important;
+    }
+}
