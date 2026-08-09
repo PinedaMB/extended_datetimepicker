@@ -113,6 +113,7 @@ import { formatDate } from './modules/formatter.js';
             const instanceId = Math.random().toString(36).substring(2, 9);
 
             if (isInput) {
+                $target.attr('readonly', true);
                 $target.attr('autocomplete', 'off');
 
                 if (!$target.parent().hasClass('dtp-input-wrapper')) {
