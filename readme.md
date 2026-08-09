@@ -2,6 +2,9 @@
 
 A modern, responsive, and internationalizable date and time picker plugin built for **jQuery** and optimized for **Bootstrap 5**. Designed to be highly customizable, featuring support for date ranges, multiple selection, birthday mode, advanced date blocking rules, layout control, and 12-hour or 24-hour time format support.
 
+## 🔗 Live Demo
+You can test the plugin live here: [View Interactive Demo](https://pinedamb.github.io/extended_datetimepicker/)
+
 ---
 
 ## 🚀 Features
