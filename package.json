@@ -1,6 +1,6 @@
 {
   "name": "jquery-extended-datetimepicker",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A modern, modular jQuery DateTimePicker plugin with Bootstrap 5 integration, range selection, dual month view, and birthday mode.",
   "main": "dist/jquery.extended.datetimepicker.min.js",
   "style": "dist/jquery.extended.datetimepicker.min.css",
