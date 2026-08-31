@@ -34,8 +34,8 @@
             ? i18nData.calendar.months
             : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-        const dayNames = (i18nData && i18nData.calendar && i18nData.calendar.daysMin)
-            ? i18nData.calendar.daysMin
+        const dayNames = (i18nData && i18nData.calendar && i18nData.calendar.weekdaysShort)
+            ? i18nData.calendar.weekdaysShort
             : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'];
 
         const firstDayIndex = new Date(year, month, 1).getDay();
