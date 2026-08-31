@@ -255,26 +255,44 @@ import { formatDate } from './modules/formatter.js';
 
                 const formattedDates = dateObjects.map(dObj => formatDate(dObj, settings.dateFormat));
 
-                let datePart = formattedDates.join(', ');
+                // Helper para convertir el objeto tiempo a string
+                const formatTimeObj = (tObj) => {
+                    if (!tObj) return '';
+                    const h = String(tObj.hour).padStart(2, '0');
+                    const m = String(tObj.minute).padStart(2, '0');
+                    return settings.format24h ? `${h}:${m}` : `${h}:${m} ${tObj.ampm}`;
+                };
+
                 if (settings.mode === 'range' && formattedDates.length === 2) {
                     const separator = i18nData.calendar?.rangeSeparator || ' - ';
-                    datePart = `${formattedDates[0]} ${separator} ${formattedDates[1]}`;
-                }
+                    let startStr = formattedDates[0];
+                    let endStr = formattedDates[1];
 
-                let timePart = '';
-                if (settings.showClock && currentTimeState) {
-                    const h = String(currentTimeState.hour).padStart(2, '0');
-                    const m = String(currentTimeState.minute).padStart(2, '0');
-
-                    if (settings.format24h) {
-                        timePart = `${h}:${m}`;
-                    } else {
-                        timePart = `${h}:${m} ${currentTimeState.ampm}`;
+                    if (settings.showClock && currentTimeState) {
+                        if (Array.isArray(currentTimeState) && currentTimeState.length === 2) {
+                            // Se aplican las horas individuales
+                            startStr += ' ' + formatTimeObj(currentTimeState[0]);
+                            endStr += ' ' + formatTimeObj(currentTimeState[1]);
+                        } else {
+                            // Fallback de seguridad
+                            startStr += ' ' + formatTimeObj(currentTimeState);
+                            endStr += ' ' + formatTimeObj(currentTimeState);
+                        }
                     }
-                }
 
-                const fullValue = [datePart, timePart].filter(Boolean).join(' ');
-                $target.val(fullValue);
+                    $target.val(`${startStr} ${separator} ${endStr}`);
+                } else {
+                    let datePart = formattedDates.join(', ');
+                    let timePart = '';
+
+                    if (settings.showClock && currentTimeState) {
+                        // Maneja estado de array o único para modo single/multiple
+                        timePart = formatTimeObj(Array.isArray(currentTimeState) ? currentTimeState[0] : currentTimeState);
+                    }
+
+                    const fullValue = [datePart, timePart].filter(Boolean).join(' ');
+                    $target.val(fullValue);
+                }
             };
 
             // INICIALIZADORES DE MÓDULOS

@@ -107,6 +107,8 @@
     flex-direction: column !important;
     flex: 1 1 0% !important;
     min-width: 240px !important;
+    min-height: 350px !important;
+    /* Evita que el contenedor colapse en meses cortos */
     box-sizing: border-box !important;
 }
 
@@ -116,7 +118,6 @@
     padding-left: 1.25rem;
 }
 
-.dtp-days-grid,
 .dtp-weekdays-grid {
     display: grid !important;
     grid-template-columns: repeat(7, 1fr) !important;
@@ -126,8 +127,22 @@
     padding: 0 !important;
 }
 
-.dtp-day {
-    aspect-ratio: 1 / 1;
+/* Altura fija para la rejilla de días (6 filas x alto de celda) */
+.dtp-days-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    grid-template-rows: repeat(6, 1fr) !important;
+    gap: 2px !important;
+    width: 100% !important;
+    height: 240px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.dtp-day,
+.dtp-days-grid>div {
+    aspect-ratio: auto !important;
+    height: 100% !important;
     display: flex;
     align-items: center;
     justify-content: center;
