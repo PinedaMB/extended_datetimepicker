@@ -32,6 +32,7 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Estilos del Plugin -->
     <link rel="stylesheet" href="./jquery.extended.datetimepicker.min.css">
+    <!-- <link rel="stylesheet" href="../dist/jquery.extended.datetimepicker.css"> -->
 
     <style>
         .demo-card {
@@ -57,7 +58,8 @@
                 <h4 class="mb-0 fw-bold">Extended DateTimePicker - Playground & Documentación</h4>
                 <!-- GITHUB -->
                 <a href="https://github.com/PinedaMB/extended_datetimepicker" target="_blank">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub" width="20" height="20">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub"
+                        width="20" height="20">
                 </a>
             </div>
             <div class="card-body p-4">
@@ -133,6 +135,14 @@
                             (`disabledDates`)</label>
                         <input type="text" class="form-control form-control-sm" id="cfg-disabledates"
                             placeholder="YYYY-MM-DD,YYYY-MM-DD,...">
+                    </div>
+
+                    <!-- Default Time -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-defaulttime">Hora Predeterminada
+                            (`defaultTime`)</label>
+                        <input type="text" class="form-control form-control-sm" id="cfg-defaulttime"
+                            placeholder="HH:mm (single) o HH:mm,HH:mm (range)">
                     </div>
 
                     <!-- Switches y Flags -->
@@ -298,6 +308,13 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td><code>defaultTime</code></td>
+                                        <td><span class="badge bg-secondary">String | Array</span></td>
+                                        <td><code>null</code></td>
+                                        <td>Hora inicial predeterminada en formato 24h. <code>'HH:mm'</code> para modo
+                                            sencillo, o <code>['HH:mm', 'HH:mm']</code> para modo rango.</td>
+                                    </tr>
+                                    <tr>
                                         <td><code>dateFormat</code></td>
                                         <td><span class="badge bg-secondary">String</span></td>
                                         <td><code>'YYYY-MM-DD'</code></td>
@@ -439,6 +456,7 @@
 
     <script type="module">
         import './jquery.extended.datetimepicker.min.js';
+        // import '../dist/jquery.extended.datetimepicker.js';
 
         $(document).ready(function () {
             const $input = $('#picker-input');
@@ -458,6 +476,19 @@
             });
 
             function initPickers() {
+
+                // --- PROCESAR INPUT DEFAULT TIME ---
+                const rawDefaultTime = $('#cfg-defaulttime').val().trim();
+                let parsedDefaultTime = null;
+
+                if (rawDefaultTime) {
+                    if (rawDefaultTime.includes(',')) {
+                        parsedDefaultTime = rawDefaultTime.split(',').map(t => t.trim());
+                    } else {
+                        parsedDefaultTime = rawDefaultTime;
+                    }
+                }
+
                 const config = {
                     mode: $('#cfg-mode').val(),
                     themeColor: $('#cfg-theme').val(),
@@ -473,6 +504,7 @@
                         .split(',')
                         .map(dateStr => dateStr.trim())
                         .filter(dateStr => dateStr !== ''),
+                    defaultTime: parsedDefaultTime, // NUEVA OPCION PASADA AL PLUGIN
                     onSelectDate: function (dateObj, formatted) {
                         logEvent(`[Fecha seleccionada]: ${JSON.stringify(formatted)}`);
                     },

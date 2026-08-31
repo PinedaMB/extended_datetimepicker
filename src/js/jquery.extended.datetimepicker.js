@@ -31,6 +31,7 @@ import { formatDate } from './modules/formatter.js';
                 showCalendar: true,
                 themeColor: 'success',
                 format24h: true,
+                defaultTime: null,
                 selectedDates: [],
                 minDate: null,
                 maxDate: null,

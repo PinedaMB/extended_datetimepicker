@@ -4,28 +4,21 @@ A modern, responsive, and internationalizable date and time picker plugin built 
 
 ## 🔗 Live Demo
 
-You can test the plugin live here: [View Interactive Demo](https://pinedamb.github.io/extended_datetimepicker/)
+You can test the plugin live here: [View Interactive Demo](https://www.google.com/search?q=https://pinedamb.github.io/extended_datetimepicker/)
 
 ---
 
 ## 🚀 Features
 
-- **Date Selection Modes**: `single`, `range`, `multiple`, and `birthday`.
-
-- **Flexible Layouts (`layout`)**: Supports both **vertical** and **horizontal** orientations to fit seamlessly into different UI designs.
-
-- **Dual Month View (`doubleMonth`)**: Displays two consecutive months to streamline range selection.
-
-- **Integrated Clock**: Intuitive hour and minute selection with support for **12-hour (with AM/PM)** or **24-hour military** format (`format24h`).
-
-- **Responsive Adaptability**: Automatic fluid scaling and layout wrapping on mobile devices and narrow containers.
-- **Fine-Grained Date Control**: Support for date limits (`minDate`, `maxDate`), weekend blocking (`disableWeekends`), and specific date disabling (`disabledDates`).
-
-- **Internationalization (i18n)**: Built-in support for multiple languages, with the ability to pass custom translation objects.
-
-- **Format Support**: Reusable internal formatter (`YYYY-MM-DD`, `DD/MM/YYYY`, etc.).
-
-- **Clean Behavior**: Automatic close when clicking outside the control and robust support for API calls (`open`, `close`, `destroy`).
+* **Date Selection Modes**: `single`, `range`, `multiple`, and `birthday`.
+* **Flexible Layouts (`layout`)**: Supports both **vertical** and **horizontal** orientations to fit seamlessly into different UI designs.
+* **Dual Month View (`doubleMonth`)**: Displays two consecutive months to streamline range selection.
+* **Integrated Clock & Range Times**: Intuitive hour and minute selection with support for **12-hour (with AM/PM)** or **24-hour military** format (`format24h`), including individual time selection for start and end dates when using the `range` mode.
+* **Responsive Adaptability**: Automatic fluid scaling and layout wrapping on mobile devices and narrow containers.
+* **Fine-Grained Date Control**: Support for date limits (`minDate`, `maxDate`), weekend blocking (`disableWeekends`), specific date disabling (`disabledDates`), and default time initialization (`defaultTime`).
+* **Internationalization (i18n)**: Built-in support for multiple languages, with the ability to pass custom translation objects.
+* **Format Support**: Reusable internal formatter (`YYYY-MM-DD`, `DD/MM/YYYY`, etc.).
+* **Clean Behavior**: Automatic close when clicking outside the control and robust support for API calls (`open`, `close`, `destroy`).
 
 ---
 
@@ -42,6 +35,7 @@ Ensure you include the required dependencies in your project first (jQuery and B
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
 ```
 
 Import the compiled plugin and its styles into your JavaScript entry point/bundle:
@@ -52,6 +46,7 @@ Import the compiled plugin and its styles into your JavaScript entry point/bundl
   href="./path/to/jquery.extended.datetimepicker.min.css"
 />;
 <script src="./path/to/jquery.extended.datetimepicker.min.js"></script>
+
 ```
 
 If you prefer the CDN version, you can use the following links:
@@ -62,6 +57,7 @@ If you prefer the CDN version, you can use the following links:
   href="https://cdn.jsdelivr.net/gh/PinedaMB/extended_datetimepicker@latest/dist/jquery.extended.datetimepicker.min.css"
 />
 <script src="https://cdn.jsdelivr.net/gh/PinedaMB/extended_datetimepicker@latest/dist/jquery.extended.datetimepicker.min.js"></script>
+
 ```
 
 ---
@@ -77,6 +73,7 @@ If you prefer the CDN version, you can use the following links:
   class="form-control"
   placeholder="Select a date"
 />
+
 ```
 
 ### 2. Initialization
@@ -89,30 +86,33 @@ $("#my-datepicker").extendedDateTimePicker({
   showCalendar: true,
   themeColor: "primary",
   format24h: true,
+  defaultTime: "14:30",
   lang: "es",
 });
+
 ```
 
 ---
 
 ## ⚙️ Configurable Options Table
 
-| Option            | Type            | Default        | Description / Allowed Values                                                         |
-| ----------------- | --------------- | -------------- | ------------------------------------------------------------------------------------ |
-| `mode`            | `string`        | `'single'`     | Selection mode: `'single'`, `'range'`, `'multiple'`, or `'birthday'`.                |
-| `layout`          | `string`        | `'vertical'`   | Panel orientation: `'vertical'` or `'horizontal'`.                                   |
-| `showCalendar`    | `boolean`       | `true`         | Shows or hides the calendar section.                                                 |
-| `showClock`       | `boolean`       | `true`         | Shows or hides the clock section.                                                    |
-| `themeColor`      | `string`        | `'success'`    | Bootstrap color theme (e.g., `'primary'`, `'success'`, `'danger'`).                  |
-| `format24h`       | `boolean`       | `true`         | If `true`, uses 0–23 hour format; if `false`, uses 12-hour format with AM/PM toggle. |
-| `minDate`         | `string/null`   | `null`         | Minimum selectable date in ISO format (`'YYYY-MM-DD'`).                              |
-| `maxDate`         | `string/null`   | `null`         | Maximum selectable date in ISO format (`'YYYY-MM-DD'`).                              |
-| `disableWeekends` | `boolean`       | `false`        | Disables Saturday and Sunday selection when set to `true`.                           |
-| `disabledDates`   | `array`         | `[]`           | List of specific dates to block, e.g., `['2026-08-15', '2026-08-20']`.               |
-| `doubleMonth`     | `boolean`       | `false`        | Renders two consecutive months side-by-side.                                         |
-| `dateFormat`      | `string`        | `'YYYY-MM-DD'` | Output format for the input field (e.g., `'DD/MM/YYYY'`).                            |
-| `lang`            | `string/object` | `'es'`         | Language code (`'es'`, `'en'`) or a custom `i18n` translation object.                |
-| `selectedDates`   | `array`         | `[]`           | List of initial pre-selected dates.                                                  |
+| Option | Type | Default | Description / Allowed Values |
+| --- | --- | --- | --- |
+| `mode` | `string` | `'single'` | Selection mode: `'single'`, `'range'`, `'multiple'`, or `'birthday'`. |
+| `layout` | `string` | `'vertical'` | Panel orientation: `'vertical'` or `'horizontal'`. |
+| `showCalendar` | `boolean` | `true` | Shows or hides the calendar section. |
+| `showClock` | `boolean` | `true` | Shows or hides the clock section. |
+| `themeColor` | `string` | `'success'` | Bootstrap color theme (e.g., `'primary'`, `'success'`, `'danger'`). |
+| `format24h` | `boolean` | `true` | If `true`, uses 0–23 hour format; if `false`, uses 12-hour format with AM/PM toggle. |
+| `defaultTime` | `string/array` | `null` | Initial default time in 24h format (`'HH:mm'` for single, or `['HH:mm', 'HH:mm']` for range). |
+| `minDate` | `string/null` | `null` | Minimum selectable date in ISO format (`'YYYY-MM-DD'`). |
+| `maxDate` | `string/null` | `null` | Maximum selectable date in ISO format (`'YYYY-MM-DD'`). |
+| `disableWeekends` | `boolean` | `false` | Disables Saturday and Sunday selection when set to `true`. |
+| `disabledDates` | `array` | `[]` | List of specific dates to block, e.g., `['2026-08-15', '2026-08-20']`. |
+| `doubleMonth` | `boolean` | `false` | Renders two consecutive months side-by-side. |
+| `dateFormat` | `string` | `'YYYY-MM-DD'` | Output format for the input field (e.g., `'DD/MM/YYYY'`). |
+| `lang` | `string/object` | `'es'` | Language code (`'es'`, `'en'`) or a custom `i18n` translation object. |
+| `selectedDates` | `array` | `[]` | List of initial pre-selected dates. |
 
 ---
 
@@ -131,9 +131,10 @@ $("#my-datepicker").extendedDateTimePicker({
     console.log("Formatted Dates:", formattedDates);
   },
   onSelectTime: function (timeState) {
-    console.log("Selected Time:", timeState); // { hour: 14, minute: 30, ampm: 'PM' }
+    console.log("Selected Time:", timeState); // Returns an object for single mode, or an array of objects [{hour, minute, ampm}, {hour, minute, ampm}] for range mode
   },
 });
+
 ```
 
 ---
@@ -151,6 +152,7 @@ $("#my-datepicker").extendedDateTimePicker("close");
 
 // Destroy instance and remove event listeners
 $("#my-datepicker").extendedDateTimePicker("destroy");
+
 ```
 
 ---
@@ -165,6 +167,7 @@ $("#birthday-input").extendedDateTimePicker({
   showClock: false,
   dateFormat: "DD/MM/YYYY",
 });
+
 ```
 
 ---
@@ -208,7 +211,13 @@ $("#my-datepicker").extendedDateTimePicker({
       daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
       rangeSeparator: "to",
     },
-    clock: { title: "Clock", hour: "Hour", minute: "Minute", ampm: "AM / PM" },
+    clock: { 
+      title: "Clock", 
+      range: { "start-title": "Start Time", "end-title": "End Time" },
+      hour: "Hour", 
+      minute: "Minute", 
+      ampm: "AM / PM" 
+    },
     birthday: {
       title: "Date of Birth",
       day: "Day",
@@ -218,6 +227,7 @@ $("#my-datepicker").extendedDateTimePicker({
     actions: { today: "Today", now: "Now", clear: "Clear" },
   },
 });
+
 ```
 
 ---

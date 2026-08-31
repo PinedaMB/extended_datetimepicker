@@ -11,10 +11,45 @@ export function initClock($parent, settings, $, i18nData, onTimeChange) {
     const arrowUp = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/></svg>`;
     const arrowDown = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/></svg>`;
 
-    // El estado ahora es un array. 1 elemento para modo normal, 2 elementos para rango.
-    let state = isRange 
-        ? [{ hour: is24h ? 0 : 12, minute: 0, ampm: 'AM' }, { hour: is24h ? 23 : 11, minute: 59, ampm: 'PM' }]
-        : [{ hour: is24h ? 0 : 6, minute: 0, ampm: 'PM' }];
+    // --- LÓGICA DE PARSEO DE defaultTime ---
+    const parseTime = (timeStr, defaultH, defaultM) => {
+        if (typeof timeStr === 'string') {
+            const parts = timeStr.split(':');
+            if (parts.length === 2) {
+                const h = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10);
+                if (!isNaN(h) && !isNaN(m) && h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+                    return { h, m };
+                }
+            }
+        }
+        return { h: defaultH, m: defaultM };
+    };
+
+    const formatToState = (parsed) => {
+        if (is24h) return { hour: parsed.h, minute: parsed.m };
+        return {
+            hour: parsed.h % 12 || 12,
+            minute: parsed.m,
+            ampm: parsed.h >= 12 ? 'PM' : 'AM'
+        };
+    };
+
+    // Construcción del estado inicial basado en la configuración del usuario
+    let state;
+    if (isRange) {
+        const t1 = Array.isArray(settings.defaultTime) ? settings.defaultTime[0] : settings.defaultTime;
+        const t2 = Array.isArray(settings.defaultTime) ? settings.defaultTime[1] : settings.defaultTime;
+        state = [
+            formatToState(parseTime(t1, 0, 0)),    // Fallback: 00:00 (12:00 AM)
+            formatToState(parseTime(t2, 23, 59))   // Fallback: 23:59 (11:59 PM)
+        ];
+    } else {
+        const t1 = Array.isArray(settings.defaultTime) ? settings.defaultTime[0] : settings.defaultTime;
+        state = [
+            formatToState(parseTime(t1, 6, 0))     // Fallback: 06:00 (6:00 AM)
+        ];
+    }
 
     const renderClockControls = (idx, title) => `
         <div class="dtp-clock-instance mb-3" data-idx="${idx}">
