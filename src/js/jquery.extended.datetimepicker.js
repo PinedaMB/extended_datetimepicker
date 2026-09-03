@@ -32,6 +32,7 @@ import { formatDate } from './modules/formatter.js';
                 themeColor: 'success',
                 format24h: true,
                 defaultTime: null,
+                actions: ['close', 'today', 'now', 'clear'],
                 selectedDates: [],
                 minDate: null,
                 maxDate: null,
@@ -71,25 +72,48 @@ import { formatDate } from './modules/formatter.js';
                 maxCardWidth = '620px';
             }
 
-            const actionsHtml = `
-                <div class="dtp-actions-footer pt-2 mt-2 border-top">
-                    <div class="row g-2">
-                        ${(settings.showCalendar && !isBirthdayMode) ? `
+            let actionButtonsHtml = '';
+            if (Array.isArray(settings.actions)) {
+                settings.actions.forEach(action => {
+                    if (action === 'today' && settings.showCalendar && !isBirthdayMode) {
+                        actionButtonsHtml += `
                             <div class="col">
                                 <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-body rounded-3 dtp-btn-today">${i18nData.actions.today}</button>
                             </div>
-                        ` : ''}
-                        ${settings.showClock ? `
+                        `;
+                    } else if (action === 'now' && settings.showClock) {
+                        actionButtonsHtml += `
                             <div class="col">
                                 <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-body rounded-3 dtp-btn-now">${i18nData.actions.now}</button>
                             </div>
-                        ` : ''}
-                        <div class="col">
-                            <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-danger rounded-3 dtp-btn-clear">${i18nData.actions.clear}</button>
-                        </div>
+                        `;
+                    } else if (action === 'clear') {
+                        actionButtonsHtml += `
+                            <div class="col">
+                                <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-danger rounded-3 dtp-btn-clear">${i18nData.actions.clear}</button>
+                            </div>
+                        `;
+                    } else if (action === 'close') {
+                        const closeText = (i18nData && i18nData.actions && i18nData.actions.close)
+                            ? i18nData.actions.close
+                            : 'Close'; // Fallback neutral por si falta la clave en el diccionario
+
+                        actionButtonsHtml += `
+                            <div class="col">
+                                <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-body rounded-3 dtp-btn-close-action">${closeText}</button>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            const actionsHtml = actionButtonsHtml ? `
+                <div class="dtp-actions-footer pt-2 mt-2 border-top">
+                    <div class="row g-2">
+                        ${actionButtonsHtml}
                     </div>
                 </div>
-            `;
+            ` : '';
 
             // CONSTRUCCIÓN DE LA TARJETA USANDO maxCardWidth CORRECTAMENTE
             const $card = $(`
@@ -500,6 +524,11 @@ import { formatDate } from './modules/formatter.js';
                 });
 
                 $(document).off(`click.dtpInputClose_${instanceId}`).on(`click.dtpInputClose_${instanceId}`, function () {
+                    closePicker();
+                });
+
+                $card.on('click', '.dtp-btn-close-action', function (e) {
+                    e.stopPropagation();
                     closePicker();
                 });
             }

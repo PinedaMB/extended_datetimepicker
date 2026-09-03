@@ -53,7 +53,9 @@
         "title": "Reloj",
         "hour": "Hora",
         "minute": "Minuto",
-        "ampm": "AM / PM"
+        "ampm": "AM / PM",
+        "start": "Hora inicio",
+        "end": "Hora fin"
     },
     "birthday": {
         "title": "Fecha de Nacimiento",
@@ -65,6 +67,7 @@
         "today": "Hoy",
         "now": "Ahora",
         "clear": "Limpiar",
+        "close": "Cerrar",
         "done": "Aceptar"
     }
 }

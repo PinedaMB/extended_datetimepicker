@@ -7,9 +7,9 @@ export const i18n = {
             weekdaysShort: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
             rangeSeparator: "a"
         },
-        clock: { title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM" },
+        clock: { title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM", start: "Hora inicio", end: "Hora fin" },
         birthday: { title: "Fecha de Nacimiento", day: "Día", month: "Mes", year: "Año" },
-        actions: { today: "Hoy", now: "Ahora", clear: "Limpiar", done: "Aceptar" }
+        actions: { today: "Hoy", now: "Ahora", clear: "Limpiar", done: "Aceptar", close: "Cerrar" }
     },
     en: {
         code: "en",
@@ -19,8 +19,8 @@ export const i18n = {
             weekdaysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
             rangeSeparator: "to"
         },
-        clock: { title: "Clock", hour: "Hour", minute: "Minute", ampm: "AM / PM" },
+        clock: { title: "Clock", hour: "Hour", minute: "Minute", ampm: "AM / PM", start: "Start Time", end: "End Time" },
         birthday: { title: "Date of Birth", day: "Day", month: "Month", year: "Year" },
-        actions: { today: "Today", now: "Now", clear: "Clear", done: "Done" }
+        actions: { today: "Today", now: "Now", clear: "Clear", done: "Done", close: "Close" }
     }
 };

@@ -53,7 +53,9 @@
         "title": "Clock",
         "hour": "Hour",
         "minute": "Minute",
-        "ampm": "AM / PM"
+        "ampm": "AM / PM",
+        "startDate": "Start Time",
+        "endDate": "End Time"
     },
     "birthday": {
         "title": "Date of Birth",
@@ -65,6 +67,7 @@
         "today": "Today",
         "now": "Now",
         "clear": "Clear",
+        "close": "Close",
         "done": "Done"
     }
 }

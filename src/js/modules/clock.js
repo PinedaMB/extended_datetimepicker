@@ -82,8 +82,11 @@ export function initClock($parent, settings, $, i18nData, onTimeChange) {
 
     let clocksHtml = '';
     if (isRange) {
-        clocksHtml += renderClockControls(0, (i18nData.code === 'en' ? 'Start Time' : 'Hora Inicio'));
-        clocksHtml += renderClockControls(1, (i18nData.code === 'en' ? 'End Time' : 'Hora Fin'));
+        const startTitle = lang && lang.start ? lang.start : 'Hora Inicio';
+        const endTitle = lang && lang.end ? lang.end : 'Hora Fin';
+        
+        clocksHtml += renderClockControls(0, startTitle);
+        clocksHtml += renderClockControls(1, endTitle);
     } else {
         clocksHtml += renderClockControls(0, lang.title);
     }

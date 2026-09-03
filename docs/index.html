@@ -31,8 +31,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Estilos del Plugin -->
-    <link rel="stylesheet" href="./jquery.extended.datetimepicker.min.css">
-    <!-- <link rel="stylesheet" href="../dist/jquery.extended.datetimepicker.css"> -->
+    <!-- <link rel="stylesheet" href="./jquery.extended.datetimepicker.min.css"> -->
+    <link rel="stylesheet" href="../dist/jquery.extended.datetimepicker.css">
 
     <style>
         .demo-card {
@@ -143,6 +143,33 @@
                             (`defaultTime`)</label>
                         <input type="text" class="form-control form-control-sm" id="cfg-defaulttime"
                             placeholder="HH:mm (single) o HH:mm,HH:mm (range)">
+                    </div>
+
+                    <!-- Acciones del Footer -->
+                    <div class="col-12">
+                        <label class="form-label fs-7 fw-semibold">Botones de Acción (`actions`)</label>
+                        <div class="d-flex flex-wrap gap-4 pt-1">
+                            <div class="form-check">
+                                <input class="form-check-input cfg-action-checkbox" type="checkbox" value="close"
+                                    id="cfg-action-close" checked>
+                                <label class="form-check-label fs-7" for="cfg-action-close">Close</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input cfg-action-checkbox" type="checkbox" value="today"
+                                    id="cfg-action-today" checked>
+                                <label class="form-check-label fs-7" for="cfg-action-today">Today</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input cfg-action-checkbox" type="checkbox" value="now"
+                                    id="cfg-action-now" checked>
+                                <label class="form-check-label fs-7" for="cfg-action-now">Now</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input cfg-action-checkbox" type="checkbox" value="clear"
+                                    id="cfg-action-clear" checked>
+                                <label class="form-check-label fs-7" for="cfg-action-clear">Clear</label>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Switches y Flags -->
@@ -343,6 +370,14 @@
                                             <code>'YYYY-MM-DD'</code>.
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td><code>actions</code></td>
+                                        <td><span class="badge bg-secondary">Array</span></td>
+                                        <td><code>['close', 'today', 'now', 'clear']</code></td>
+                                        <td>Define los botones de acción visibles en el pie de página del componente.
+                                            Valores permitidos: <code>'close'</code>, <code>'today'</code>,
+                                            <code>'now'</code>, <code>'clear'</code>.</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -455,8 +490,8 @@
         crossorigin="anonymous"></script>
 
     <script type="module">
-        import './jquery.extended.datetimepicker.min.js';
-        // import '../dist/jquery.extended.datetimepicker.js';
+        // import './jquery.extended.datetimepicker.min.js';
+        import '../dist/jquery.extended.datetimepicker.js';
 
         $(document).ready(function () {
             const $input = $('#picker-input');
@@ -489,6 +524,11 @@
                     }
                 }
 
+                const selectedActions = [];
+                $('.cfg-action-checkbox:checked').each(function () {
+                    selectedActions.push($(this).val());
+                });
+
                 const config = {
                     mode: $('#cfg-mode').val(),
                     themeColor: $('#cfg-theme').val(),
@@ -504,7 +544,8 @@
                         .split(',')
                         .map(dateStr => dateStr.trim())
                         .filter(dateStr => dateStr !== ''),
-                    defaultTime: parsedDefaultTime, // NUEVA OPCION PASADA AL PLUGIN
+                    defaultTime: parsedDefaultTime,
+                    actions: selectedActions, // <--- ACCIONES DINÁMICAS VINCULADAS
                     onSelectDate: function (dateObj, formatted) {
                         logEvent(`[Fecha seleccionada]: ${JSON.stringify(formatted)}`);
                     },
