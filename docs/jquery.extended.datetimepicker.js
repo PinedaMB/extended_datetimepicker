@@ -244,8 +244,11 @@
 
         let clocksHtml = '';
         if (isRange) {
-            clocksHtml += renderClockControls(0, (i18nData.code === 'en' ? 'Start Time' : 'Hora Inicio'));
-            clocksHtml += renderClockControls(1, (i18nData.code === 'en' ? 'End Time' : 'Hora Fin'));
+            const startTitle = lang && lang.start ? lang.start : 'Hora Inicio';
+            const endTitle = lang && lang.end ? lang.end : 'Hora Fin';
+            
+            clocksHtml += renderClockControls(0, startTitle);
+            clocksHtml += renderClockControls(1, endTitle);
         } else {
             clocksHtml += renderClockControls(0, lang.title);
         }
@@ -518,9 +521,9 @@
                 weekdaysShort: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
                 rangeSeparator: "a"
             },
-            clock: { title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM" },
+            clock: { title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM", start: "Hora inicio", end: "Hora fin" },
             birthday: { title: "Fecha de Nacimiento", day: "Día", month: "Mes", year: "Año" },
-            actions: { today: "Hoy", now: "Ahora", clear: "Limpiar", done: "Aceptar" }
+            actions: { today: "Hoy", now: "Ahora", clear: "Limpiar", done: "Aceptar", close: "Cerrar" }
         },
         en: {
             code: "en",
@@ -530,9 +533,9 @@
                 weekdaysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
                 rangeSeparator: "to"
             },
-            clock: { title: "Clock", hour: "Hour", minute: "Minute", ampm: "AM / PM" },
+            clock: { title: "Clock", hour: "Hour", minute: "Minute", ampm: "AM / PM", start: "Start Time", end: "End Time" },
             birthday: { title: "Date of Birth", day: "Day", month: "Month", year: "Year" },
-            actions: { today: "Today", now: "Now", clear: "Clear", done: "Done" }
+            actions: { today: "Today", now: "Now", clear: "Clear", done: "Done", close: "Close" }
         }
     };
 
@@ -588,6 +591,7 @@
                     themeColor: 'success',
                     format24h: true,
                     defaultTime: null,
+                    actions: ['close', 'today', 'now', 'clear'],
                     selectedDates: [],
                     minDate: null,
                     maxDate: null,
@@ -626,25 +630,48 @@
                     maxCardWidth = '620px';
                 }
 
-                const actionsHtml = `
-                <div class="dtp-actions-footer pt-2 mt-2 border-top">
-                    <div class="row g-2">
-                        ${(settings.showCalendar && !isBirthdayMode) ? `
+                let actionButtonsHtml = '';
+                if (Array.isArray(settings.actions)) {
+                    settings.actions.forEach(action => {
+                        if (action === 'today' && settings.showCalendar && !isBirthdayMode) {
+                            actionButtonsHtml += `
                             <div class="col">
                                 <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-body rounded-3 dtp-btn-today">${i18nData.actions.today}</button>
                             </div>
-                        ` : ''}
-                        ${settings.showClock ? `
+                        `;
+                        } else if (action === 'now' && settings.showClock) {
+                            actionButtonsHtml += `
                             <div class="col">
                                 <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-body rounded-3 dtp-btn-now">${i18nData.actions.now}</button>
                             </div>
-                        ` : ''}
-                        <div class="col">
-                            <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-danger rounded-3 dtp-btn-clear">${i18nData.actions.clear}</button>
-                        </div>
+                        `;
+                        } else if (action === 'clear') {
+                            actionButtonsHtml += `
+                            <div class="col">
+                                <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-danger rounded-3 dtp-btn-clear">${i18nData.actions.clear}</button>
+                            </div>
+                        `;
+                        } else if (action === 'close') {
+                            const closeText = (i18nData && i18nData.actions && i18nData.actions.close)
+                                ? i18nData.actions.close
+                                : 'Close'; // Fallback neutral por si falta la clave en el diccionario
+
+                            actionButtonsHtml += `
+                            <div class="col">
+                                <button type="button" class="btn bg-body-tertiary border-0 w-100 py-2 fw-semibold text-body rounded-3 dtp-btn-close-action">${closeText}</button>
+                            </div>
+                        `;
+                        }
+                    });
+                }
+
+                const actionsHtml = actionButtonsHtml ? `
+                <div class="dtp-actions-footer pt-2 mt-2 border-top">
+                    <div class="row g-2">
+                        ${actionButtonsHtml}
                     </div>
                 </div>
-            `;
+            ` : '';
 
                 // CONSTRUCCIÓN DE LA TARJETA USANDO maxCardWidth CORRECTAMENTE
                 const $card = $(`
@@ -1055,6 +1082,11 @@
                     });
 
                     $(document).off(`click.dtpInputClose_${instanceId}`).on(`click.dtpInputClose_${instanceId}`, function () {
+                        closePicker();
+                    });
+
+                    $card.on('click', '.dtp-btn-close-action', function (e) {
+                        e.stopPropagation();
                         closePicker();
                     });
                 }
