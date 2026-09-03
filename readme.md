@@ -4,7 +4,7 @@ A modern, responsive, and internationalizable date and time picker plugin built 
 
 ## 🔗 Live Demo
 
-You can test the plugin live here: [View Interactive Demo](https://www.google.com/search?q=https://pinedamb.github.io/extended_datetimepicker/)
+You can test the plugin live here: [View Interactive Demo](https://pinedamb.github.io/extended_datetimepicker/)
 
 ---
 
