@@ -75,8 +75,6 @@ function buildSingleMonthHtml(dateObj, settings, selectedDates, hoverDate, i18nD
     let nextMonthDayCount = 1;
 
     for (let i = 0; i < 42; i++) {
-        if (i >= 35 && dayCount > totalDays) break;
-
         if (i < firstDayIndex) {
             const prevDayNum = prevMonthDays - firstDayIndex + i + 1;
             daysGridHtml += `

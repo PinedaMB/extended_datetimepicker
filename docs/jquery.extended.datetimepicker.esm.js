@@ -24,6 +24,14 @@ function shiftMonth(date, amount) {
     return result;
 }
 
+// Keep the popup inside the available viewport without moving the page.
+function popupPlacement(spaceAbove, spaceBelow, height, gap = 4) {
+    const above = Math.max(0, spaceAbove - gap);
+    const below = Math.max(0, spaceBelow - gap);
+    const openAbove = height > below && above > below;
+    return { openAbove, maxHeight: openAbove ? above : below };
+}
+
 function renderCalendar($container, currentDate, settings, selectedDates, hoverDate, $, i18nData) {
     if (settings.doubleMonth) {
         const nextMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
@@ -100,8 +108,6 @@ function buildSingleMonthHtml(dateObj, settings, selectedDates, hoverDate, i18nD
     let nextMonthDayCount = 1;
 
     for (let i = 0; i < 42; i++) {
-        if (i >= 35 && dayCount > totalDays) break;
-
         if (i < firstDayIndex) {
             const prevDayNum = prevMonthDays - firstDayIndex + i + 1;
             daysGridHtml += `
@@ -794,7 +800,7 @@ const activePickers = new Set();
                         if (value === undefined) $target.removeAttr(key); else $target.attr(key, value);
                     }
                     $target.off('.dtp');
-                    $(document).off(`click.dtpInputClose_${instanceId}`);
+                    $(document).off(`pointerdown.dtpInputClose_${instanceId}`);
                     $card.remove();
                     if (ownsWrapper && $target.parent().hasClass('dtp-input-wrapper')) {
                         $target.unwrap();
@@ -844,21 +850,17 @@ const activePickers = new Set();
                     const spaceBelow = windowHeight - ((targetOffset.top - scrollTop) + inputHeight);
                     const spaceAbove = targetOffset.top - scrollTop;
 
-                    if (spaceBelow < cardHeight && spaceAbove >= cardHeight) {
+                    const placement = popupPlacement(spaceAbove, spaceBelow, cardHeight);
+                    if (placement.openAbove) {
                         $card.css({
                             top: 'auto',
                             bottom: '100%',
                             marginTop: '0',
                             marginBottom: '0.25rem'
                         });
-                    } else if (spaceBelow < cardHeight) {
-                        const currentScroll = $window.scrollTop();
-                        const overflowAmount = cardHeight - spaceBelow + 20;
-
-                        $('html, body').animate({
-                            scrollTop: currentScroll + overflowAmount
-                        }, 200);
                     }
+
+                    $card.css({ maxHeight: `${placement.maxHeight}px`, overflowY: 'auto', overscrollBehavior: 'contain' });
 
                     $card.css({ opacity: 1, display: 'none' }).stop(true, true).fadeIn(150);
                 } else {
@@ -1160,7 +1162,8 @@ const activePickers = new Set();
                     e.stopPropagation();
                 });
 
-                $(document).off(`click.dtpInputClose_${instanceId}`).on(`click.dtpInputClose_${instanceId}`, function () {
+                $(document).on(`pointerdown.dtpInputClose_${instanceId}`, function (e) {
+                    if (e.target === $target[0] || $card[0].contains(e.target)) return;
                     closePicker();
                 });
 

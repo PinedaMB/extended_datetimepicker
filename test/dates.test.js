@@ -30,3 +30,13 @@ test('calendar exposes real buttons, disabled state and selected state', () => {
     assert.match(html, /aria-label="Mes siguiente"/);
     assert.equal((html.match(/<button/g) || []).length, (html.match(/<\/button>/g) || []).length);
 });
+
+test('calendar always renders six complete weeks for short and long months', () => {
+    for (const date of [new Date(2026, 1, 1), new Date(2026, 9, 1), new Date(2026, 7, 1)]) {
+        let html;
+        renderCalendar({ html: value => { html = value; } }, date,
+            { mode: 'single', themeColor: 'primary' }, [], null, null, i18n.es);
+        const grid = html.slice(html.indexOf('<div class="dtp-days-grid'));
+        assert.equal((grid.match(/<div class="py-1 /g) || []).length, 42);
+    }
+});

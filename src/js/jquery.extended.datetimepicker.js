@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { parseDate, isDateAllowed, shiftMonth } from './modules/dates.js';
+import { popupPlacement } from './modules/placement.js';
 import '../css/jquery.extended.datetimepicker.css';
 import { renderCalendar } from './modules/calendar.js';
 import { initClock } from './modules/clock.js';
@@ -197,7 +198,7 @@ const activePickers = new Set();
                         if (value === undefined) $target.removeAttr(key); else $target.attr(key, value);
                     }
                     $target.off('.dtp');
-                    $(document).off(`click.dtpInputClose_${instanceId}`);
+                    $(document).off(`pointerdown.dtpInputClose_${instanceId}`);
                     $card.remove();
                     if (ownsWrapper && $target.parent().hasClass('dtp-input-wrapper')) {
                         $target.unwrap();
@@ -247,21 +248,17 @@ const activePickers = new Set();
                     const spaceBelow = windowHeight - ((targetOffset.top - scrollTop) + inputHeight);
                     const spaceAbove = targetOffset.top - scrollTop;
 
-                    if (spaceBelow < cardHeight && spaceAbove >= cardHeight) {
+                    const placement = popupPlacement(spaceAbove, spaceBelow, cardHeight);
+                    if (placement.openAbove) {
                         $card.css({
                             top: 'auto',
                             bottom: '100%',
                             marginTop: '0',
                             marginBottom: '0.25rem'
                         });
-                    } else if (spaceBelow < cardHeight) {
-                        const currentScroll = $window.scrollTop();
-                        const overflowAmount = cardHeight - spaceBelow + 20;
-
-                        $('html, body').animate({
-                            scrollTop: currentScroll + overflowAmount
-                        }, 200);
                     }
+
+                    $card.css({ maxHeight: `${placement.maxHeight}px`, overflowY: 'auto', overscrollBehavior: 'contain' });
 
                     $card.css({ opacity: 1, display: 'none' }).stop(true, true).fadeIn(150);
                 } else {
@@ -563,7 +560,8 @@ const activePickers = new Set();
                     e.stopPropagation();
                 });
 
-                $(document).off(`click.dtpInputClose_${instanceId}`).on(`click.dtpInputClose_${instanceId}`, function () {
+                $(document).on(`pointerdown.dtpInputClose_${instanceId}`, function (e) {
+                    if (e.target === $target[0] || $card[0].contains(e.target)) return;
                     closePicker();
                 });
 
