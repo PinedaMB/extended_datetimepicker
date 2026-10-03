@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { parseDate, isDateAllowed, shiftMonth } from './modules/dates.js';
-import { popupPlacement } from './modules/placement.js';
+import { popupPlacement, horizontalPlacement } from './modules/placement.js';
 import '../css/jquery.extended.datetimepicker.css';
 import { renderCalendar } from './modules/calendar.js';
 import { initClock } from './modules/clock.js';
@@ -238,12 +238,11 @@ const activePickers = new Set();
                     const scrollTop = $window.scrollTop();
                     const scrollLeft = $window.scrollLeft();
 
-                    if (windowWidth > 680) {
-                        const inputRightRelativeToViewport = targetOffset.left + cardWidth - scrollLeft;
-                        if (inputRightRelativeToViewport > windowWidth) {
-                            $card.css({ left: 'auto', right: '0' });
-                        }
-                    }
+                    const inputLeft = targetOffset.left - scrollLeft;
+                    const inputRight = inputLeft + $target.outerWidth();
+                    const viewportLeft = horizontalPlacement(inputLeft, inputRight, cardWidth, windowWidth);
+                    const wrapperLeft = $wrapper[0].getBoundingClientRect().left + $wrapper[0].clientLeft;
+                    $card.css({ left: `${viewportLeft - wrapperLeft}px`, right: 'auto' });
 
                     const spaceBelow = windowHeight - ((targetOffset.top - scrollTop) + inputHeight);
                     const spaceAbove = targetOffset.top - scrollTop;

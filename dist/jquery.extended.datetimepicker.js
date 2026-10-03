@@ -33,6 +33,14 @@
         return { openAbove, maxHeight: openAbove ? above : below };
     }
 
+    function horizontalPlacement(inputLeft, inputRight, width, viewportWidth, padding = 8) {
+        const available = Math.max(0, viewportWidth - padding * 2);
+        const popupWidth = Math.min(width, available);
+        let left = inputLeft;
+        if (left + popupWidth > viewportWidth - padding) left = inputRight - popupWidth;
+        return Math.max(padding, Math.min(left, viewportWidth - padding - popupWidth));
+    }
+
     function renderCalendar($container, currentDate, settings, selectedDates, hoverDate, $, i18nData) {
         if (settings.doubleMonth) {
             const nextMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
@@ -841,12 +849,11 @@
                         const scrollTop = $window.scrollTop();
                         const scrollLeft = $window.scrollLeft();
 
-                        if (windowWidth > 680) {
-                            const inputRightRelativeToViewport = targetOffset.left + cardWidth - scrollLeft;
-                            if (inputRightRelativeToViewport > windowWidth) {
-                                $card.css({ left: 'auto', right: '0' });
-                            }
-                        }
+                        const inputLeft = targetOffset.left - scrollLeft;
+                        const inputRight = inputLeft + $target.outerWidth();
+                        const viewportLeft = horizontalPlacement(inputLeft, inputRight, cardWidth, windowWidth);
+                        const wrapperLeft = $wrapper[0].getBoundingClientRect().left + $wrapper[0].clientLeft;
+                        $card.css({ left: `${viewportLeft - wrapperLeft}px`, right: 'auto' });
 
                         const spaceBelow = windowHeight - ((targetOffset.top - scrollTop) + inputHeight);
                         const spaceAbove = targetOffset.top - scrollTop;
