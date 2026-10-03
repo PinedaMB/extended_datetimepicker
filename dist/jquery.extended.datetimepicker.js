@@ -1,5 +1,29 @@
-(function () {
+(function ($) {
     'use strict';
+
+    function parseDate(value) {
+        if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+        const [year, month, day] = value.split('-').map(Number);
+        const date = new Date(0);
+        date.setFullYear(year, month - 1, day);
+        date.setHours(0, 0, 0, 0);
+        return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
+    }
+
+    function isDateAllowed(value, settings) {
+        const date = parseDate(value);
+        return !!date && !(settings.minDate && value < settings.minDate)
+            && !(settings.maxDate && value > settings.maxDate)
+            && !(settings.disableWeekends && [0, 6].includes(date.getDay()))
+            && !(Array.isArray(settings.disabledDates) && settings.disabledDates.includes(value));
+    }
+
+    function shiftMonth(date, amount) {
+        const result = new Date(date);
+        result.setDate(1);
+        result.setMonth(result.getMonth() + amount);
+        return result;
+    }
 
     function renderCalendar($container, currentDate, settings, selectedDates, hoverDate, $, i18nData) {
         if (settings.doubleMonth) {
@@ -52,14 +76,14 @@
         <div class="d-flex align-items-center justify-content-between mb-3 w-100">
             <div>
                 ${showPrev ? `
-                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-prev p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-prev p-0 d-flex align-items-center justify-content-center" aria-label="${i18nData.calendar.previous || 'Previous month'}" style="width: 32px; height: 32px;">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
                     </button>` : '<div style="width: 32px;"></div>'}
             </div>
             <div class="fw-bold text-body fs-6 text-center">${monthNames[month]} ${year}</div>
             <div>
                 ${showNext ? `
-                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-next p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-next p-0 d-flex align-items-center justify-content-center" aria-label="${i18nData.calendar.next || 'Next month'}" style="width: 32px; height: 32px;">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1 .708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
                     </button>` : '<div style="width: 32px;"></div>'}
             </div>
@@ -93,13 +117,8 @@
                 const dateKey = `${year}-${formattedMonth}-${formattedDay}`;
 
                 const currentObj = new Date(year, month, dayCount);
-                const dayOfWeek = currentObj.getDay();
-                let isDisabled = false;
-
-                if (settings.disableWeekends && (dayOfWeek === 0 || dayOfWeek === 6)) isDisabled = true;
-                if (settings.minDate && dateKey < settings.minDate) isDisabled = true;
-                if (settings.maxDate && dateKey > settings.maxDate) isDisabled = true;
-                if (Array.isArray(settings.disabledDates) && settings.disabledDates.includes(dateKey)) isDisabled = true;
+                currentObj.getDay();
+                const isDisabled = !isDateAllowed(dateKey, settings);
 
                 let isSelected = selectedDates.includes(dateKey);
                 let isInRange = false;
@@ -140,9 +159,9 @@
 
                 daysGridHtml += `
                 <div class="py-1 d-flex align-items-center justify-content-center">
-                    <div class="${classes}" style="width: 32px; height: 32px; ${isDisabled ? '' : 'cursor: pointer;'}" data-date="${dateKey}">
+                    <button type="button" ${isDisabled ? 'disabled' : ''} aria-label="${dateKey}" aria-pressed="${isSelected}" class="border-0 ${classes}" style="width: 32px; height: 32px; ${isDisabled ? '' : 'cursor: pointer;'}" data-date="${dateKey}">
                         ${dayCount}
-                    </div>
+                    </button>
                 </div>`;
                 dayCount++;
             } else {
@@ -177,7 +196,7 @@
         const parseTime = (timeStr, defaultH, defaultM) => {
             if (typeof timeStr === 'string') {
                 const parts = timeStr.split(':');
-                if (parts.length === 2) {
+                if (parts.length === 2 && /^\d{2}:\d{2}$/.test(timeStr)) {
                     const h = parseInt(parts[0], 10);
                     const m = parseInt(parts[1], 10);
                     if (!isNaN(h) && !isNaN(m) && h >= 0 && h <= 23 && m >= 0 && m <= 59) {
@@ -360,6 +379,13 @@
             updateDisplay();
         });
 
+        for (const field of ['hour', 'minute']) {
+            $clockWrapper.find('.dtp-input-' + field).attr({ 'aria-label': lang[field], inputmode: 'numeric' });
+            $clockWrapper.find('.dtp-btn-up-' + field).attr('aria-label', (lang.increase || 'Increase') + ' ' + lang[field]);
+            $clockWrapper.find('.dtp-btn-down-' + field).attr('aria-label', (lang.decrease || 'Decrease') + ' ' + lang[field]);
+        }
+        $clockWrapper.find('.dtp-btn-toggle-ampm').attr('aria-label', lang.ampm);
+        $parent.on('dtp:clear', () => { $clockWrapper.find('input').val(''); $clockWrapper.find('.dtp-btn-ampm-val').text('—'); });
         updateDisplay();
     }
 
@@ -407,7 +433,8 @@
         }
 
         const currentYear = new Date().getFullYear();
-        let state = { day: 1, month: 0, year: 2000 };
+        const initial = parseDate(settings.selectedDates[0]) || parseDate(settings.minDate) || new Date(2000, 0, 1);
+        let state = { day: initial.getDate(), month: initial.getMonth(), year: initial.getFullYear() };
 
         const $inputDay = $birthdayWrapper.find('.dtp-input-day');
         const $btnMonth = $birthdayWrapper.find('.dtp-btn-month-val');
@@ -419,7 +446,10 @@
             if (typeof onDateChange === 'function') {
                 const formattedMonth = String(state.month + 1).padStart(2, '0');
                 const formattedDay = String(state.day).padStart(2, '0');
-                onDateChange(`${state.year}-${formattedMonth}-${formattedDay}`, state);
+                const key = String(state.year).padStart(4, '0') + '-' + formattedMonth + '-' + formattedDay;
+                const valid = state.year >= 1900 && state.year <= currentYear && isDateAllowed(key, settings);
+                $birthdayWrapper.find('input').attr('aria-invalid', String(!valid));
+                if (valid) onDateChange(key, { ...state });
             }
         };
 
@@ -455,7 +485,8 @@
         $inputYear.off('input').on('input', function () {
             let val = parseInt($(this).val(), 10);
             if (!isNaN(val)) {
-                state.year = val;
+                state.year = Math.max(1900, Math.min(currentYear, val));
+                state.day = Math.min(state.day, getMaxDays(state.month, state.year));
                 notifyChange();
             }
         });
@@ -509,7 +540,16 @@
             updateDisplay();
         });
 
-        updateDisplay();
+        $inputDay.attr({ 'aria-label': lang.day, inputmode: 'numeric' });
+        $inputYear.attr({ 'aria-label': lang.year, inputmode: 'numeric' });
+        for (const field of ['day', 'month', 'year']) {
+            $birthdayWrapper.find('.dtp-btn-up-' + field).attr('aria-label', (lang.increase || 'Increase') + ' ' + lang[field]);
+            $birthdayWrapper.find('.dtp-btn-down-' + field).attr('aria-label', (lang.decrease || 'Decrease') + ' ' + lang[field]);
+        }
+        $parent.on('dtp:clear', () => { $inputDay.val(''); $inputYear.val(''); $btnMonth.text('—'); });
+        $inputDay.val(String(state.day).padStart(2, '0'));
+        $inputYear.val(state.year);
+        $btnMonth.text(months[state.month]);
     }
 
     const i18n = {
@@ -519,10 +559,11 @@
                 months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
                 monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
                 weekdaysShort: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
+                title: "Fecha y hora", previous: "Mes anterior", next: "Mes siguiente",
                 rangeSeparator: "a"
             },
-            clock: { title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM", start: "Hora inicio", end: "Hora fin" },
-            birthday: { title: "Fecha de Nacimiento", day: "Día", month: "Mes", year: "Año" },
+            clock: { increase: "Aumentar", decrease: "Disminuir", title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM", start: "Hora inicio", end: "Hora fin" },
+            birthday: { increase: "Aumentar", decrease: "Disminuir", title: "Fecha de Nacimiento", day: "Día", month: "Mes", year: "Año" },
             actions: { today: "Hoy", now: "Ahora", clear: "Limpiar", done: "Aceptar", close: "Cerrar" }
         },
         en: {
@@ -531,6 +572,7 @@
                 months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                 monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 weekdaysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+                title: "Date and time", previous: "Previous month", next: "Next month",
                 rangeSeparator: "to"
             },
             clock: { title: "Clock", hour: "Hour", minute: "Minute", ampm: "AM / PM", start: "Start Time", end: "End Time" },
@@ -564,14 +606,17 @@
         return format.replace(/YYYY|YY|MM|M|DD|D/g, matched => map[matched]);
     }
 
+    const activePickers = new Set();
     (function ($) {
-        $.fn.extendedDateTimePicker = function (options, param) {
+        $.fn.extendedDateTimePicker = function (options) {
             return this.each(function () {
                 const $target = $(this);
                 let instance = $target.data('datetimepicker');
 
                 // --- MANEJO DE MÉTODOS PÚBLICOS COMO CADENAS DE TEXTO ---
-                if (typeof options === 'string' && instance) {
+                if (typeof options === 'string') {
+                    if (!['open', 'close', 'destroy'].includes(options)) throw new Error(`Unknown picker method: ${options}`);
+                    if (!instance) return;
                     if (options === 'open') instance.open();
                     if (options === 'close') instance.close();
                     if (options === 'destroy') instance.destroy();
@@ -606,16 +651,26 @@
                     onSelectTime: null
                 }, options);
 
-                const i18nData = typeof settings.lang === 'object'
-                    ? settings.lang
-                    : (i18n[settings.lang] || i18n.es);
+                if (!['single', 'multiple', 'range', 'birthday'].includes(settings.mode)) throw new Error('Invalid picker mode');
+                for (const key of ['minDate', 'maxDate']) {
+                    if (settings[key] != null && !parseDate(settings[key])) throw new Error('Invalid ' + key);
+                }
+                if (settings.minDate && settings.maxDate && settings.minDate > settings.maxDate) throw new Error('minDate exceeds maxDate');
+                const i18nData = $.extend(true, {}, i18n.es, typeof settings.lang === 'object' && settings.lang ? settings.lang : (i18n[settings.lang] || {}));
 
                 const isInput = $target.is('input');
                 const isBirthdayMode = settings.mode === 'birthday';
-                let currentDate = new Date();
-                let selectedDatesState = Array.isArray(settings.selectedDates) ? [...settings.selectedDates] : [];
+                let currentDate = shiftMonth(new Date(), 0);
+                let selectedDatesState = [...new Set(Array.isArray(settings.selectedDates) ? settings.selectedDates : [])].filter(d => isDateAllowed(d, settings));
+                if (settings.mode !== 'multiple') selectedDatesState = selectedDatesState.slice(0, settings.mode === 'range' ? 2 : 1);
+                if (settings.mode === 'range') selectedDatesState.sort();
+                if (isBirthdayMode) selectedDatesState = selectedDatesState.filter(d => parseDate(d).getFullYear() >= 1900 && parseDate(d).getFullYear() <= new Date().getFullYear());
+                settings.selectedDates = [...selectedDatesState];
+                if (selectedDatesState.length) currentDate = shiftMonth(parseDate(selectedDatesState[0]), 0);
                 let hoverDateState = null;
-                let currentTimeState = settings.showClock ? { hour: 6, minute: 0, ampm: 'PM' } : null;
+                let currentTimeState = null;
+                let initializing = true;
+                let cleared = false;
                 let isOpen = false;
 
                 const isHorizontal = settings.layout === 'horizontal' && settings.showCalendar && settings.showClock && !isBirthdayMode;
@@ -675,7 +730,7 @@
 
                 // CONSTRUCCIÓN DE LA TARJETA USANDO maxCardWidth CORRECTAMENTE
                 const $card = $(`
-                <div class="card shadow-sm dtp-card ${layoutClass}" style="min-width: ${maxCardWidth}; max-width: 100%;">
+                <div class="card shadow-sm dtp-card ${layoutClass}" style="--dtp-width: ${maxCardWidth};">
                     <div class="card-body p-3 dtp-card-body">
                         ${isBirthdayMode ? '<div class="dtp-birthday-section w-100"></div>' : ''}
                         ${(settings.showCalendar && !isBirthdayMode) ? '<div class="dtp-calendar-section w-100"></div>' : ''}
@@ -695,11 +750,16 @@
                 let $wrapper;
                 const instanceId = Math.random().toString(36).substring(2, 9);
 
+                const originalAttrs = Object.fromEntries(['readonly', 'autocomplete', 'aria-expanded', 'aria-controls', 'aria-haspopup'].map(key => [key, $target.attr(key)]));
+                let ownsWrapper = false;
+                $card.attr({ id: 'dtp-' + instanceId, role: isInput ? 'dialog' : 'group', 'aria-label': i18nData.calendar.title || 'Date and time' });
                 if (isInput) {
+                    $target.attr({ 'aria-expanded': 'false', 'aria-controls': 'dtp-' + instanceId, 'aria-haspopup': 'dialog' });
                     $target.attr('readonly', true);
                     $target.attr('autocomplete', 'off');
 
                     if (!$target.parent().hasClass('dtp-input-wrapper')) {
+                        ownsWrapper = true;
                         $target.wrap('<div class="dtp-input-wrapper position-relative" style="display: inline-block; width: 100%;"></div>');
                     }
                     $wrapper = $target.parent();
@@ -729,11 +789,15 @@
 
                 // --- DESTRUCCIÓN SEGURA DE INSTANCIA ---
                 const destroyPicker = () => {
+                    activePickers.delete(instance);
                     if (isInput) {
+                        for (const [key, value] of Object.entries(originalAttrs)) {
+                            if (value === undefined) $target.removeAttr(key); else $target.attr(key, value);
+                        }
                         $target.off('.dtp');
                         $(document).off(`click.dtpInputClose_${instanceId}`);
                         $card.remove();
-                        if ($target.parent().hasClass('dtp-input-wrapper')) {
+                        if (ownsWrapper && $target.parent().hasClass('dtp-input-wrapper')) {
                             $target.unwrap();
                         }
                     } else {
@@ -744,17 +808,7 @@
 
                 const openPicker = () => {
                     if (isOpen) return;
-                    $('.dtp-card').not('.dtp-card-static').not($card).hide();
-
-                    // Si estamos en un dispositivo móvil o pantalla estrecha, forzamos ancho completo adaptado
-                    if (window.innerWidth <= 680) {
-                        $card.css({
-                            width: '100vw',
-                            maxWidth: '100vw',
-                            left: '0 !important',
-                            right: '0 !important'
-                        });
-                    }
+                    activePickers.forEach(other => { if (other !== instance) other.close(); });
 
                     if (isInput) {
                         $card.css({
@@ -807,33 +861,39 @@
                             }, 200);
                         }
 
-                        $card.css({ opacity: 1, display: 'none' }).fadeIn(150);
+                        $card.css({ opacity: 1, display: 'none' }).stop(true, true).fadeIn(150);
                     } else {
-                        $card.fadeIn(150);
+                        $card.stop(true, true).fadeIn(150);
                     }
 
                     isOpen = true;
+                    if (isInput) $target.attr('aria-expanded', 'true');
                     if (typeof settings.onOpen === 'function') settings.onOpen.call($target[0]);
                 };
 
                 const closePicker = () => {
                     if (!isOpen) return;
-                    $card.fadeOut(150);
+                    $card.stop(true, true).fadeOut(150);
                     isOpen = false;
+                    if (isInput) $target.attr('aria-expanded', 'false');
                     if (typeof settings.onClose === 'function') settings.onClose.call($target[0]);
                 };
 
+                const writeValue = value => {
+                    const changed = $target.val() !== value;
+                    $target.val(value);
+                    if (changed && !initializing) $target.trigger('input').trigger('change');
+                };
                 const updateInputValue = () => {
                     if (!isInput) return;
 
-                    if (selectedDatesState.length === 0 && !settings.showClock) {
-                        $target.val('');
+                    if (cleared || (selectedDatesState.length === 0 && (settings.showCalendar || isBirthdayMode))) {
+                        writeValue('');
                         return;
                     }
 
                     const dateObjects = selectedDatesState.map(dStr => {
-                        const [y, m, d] = dStr.split('-').map(Number);
-                        return new Date(y, m - 1, d);
+                        return parseDate(dStr);
                     });
 
                     const formattedDates = dateObjects.map(dObj => formatDate(dObj, settings.dateFormat));
@@ -863,7 +923,7 @@
                             }
                         }
 
-                        $target.val(`${startStr} ${separator} ${endStr}`);
+                        writeValue(`${startStr} ${separator} ${endStr}`);
                     } else {
                         let datePart = formattedDates.join(', ');
                         let timePart = '';
@@ -874,19 +934,19 @@
                         }
 
                         const fullValue = [datePart, timePart].filter(Boolean).join(' ');
-                        $target.val(fullValue);
+                        writeValue(fullValue);
                     }
                 };
 
                 // INICIALIZADORES DE MÓDULOS
                 if (isBirthdayMode) {
                     initBirthday($bdayContainer, settings, $, i18nData, function (dateStr) {
+                        cleared = false;
                         selectedDatesState = [dateStr];
                         updateInputValue();
 
-                        if (typeof settings.onSelectDate === 'function') {
-                            const [y, m, d] = dateStr.split('-').map(Number);
-                            const dateObj = new Date(y, m - 1, d);
+                        if (!initializing && typeof settings.onSelectDate === 'function') {
+                            const dateObj = parseDate(dateStr);
                             const formatted = formatDate(dateObj, settings.dateFormat);
                             settings.onSelectDate(dateObj, [formatted]);
                         }
@@ -913,16 +973,26 @@
                     };
 
                     updateCalendar();
+                    $calContainer.on('keydown.dtp', '.dtp-day', function (e) {
+                        const offsets = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 };
+                        if (!(e.key in offsets)) return;
+                        e.preventDefault();
+                        const days = $calContainer.find('.dtp-day');
+                        const step = offsets[e.key];
+                        for (let next = days.index(this) + step; next >= 0 && next < days.length; next += step) {
+                            if (!days[next].disabled) { days[next].focus(); break; }
+                        }
+                    });
 
                     $calContainer.off('click', '.dtp-prev').on('click', '.dtp-prev', function (e) {
                         e.stopPropagation();
-                        currentDate.setMonth(currentDate.getMonth() - 1);
+                        currentDate = shiftMonth(currentDate, -1);
                         updateCalendar();
                     });
 
                     $calContainer.off('click', '.dtp-next').on('click', '.dtp-next', function (e) {
                         e.stopPropagation();
-                        currentDate.setMonth(currentDate.getMonth() + 1);
+                        currentDate = shiftMonth(currentDate, 1);
                         updateCalendar();
                     });
 
@@ -969,7 +1039,8 @@
                         if ($(this).hasClass('pe-none')) return;
 
                         const dateKey = $(this).attr('data-date');
-                        if (!dateKey) return;
+                        if (!isDateAllowed(dateKey, settings)) return;
+                        cleared = false;
 
                         const [y, m] = dateKey.split('-').map(Number);
                         if (settings.doubleMonth) {
@@ -1009,12 +1080,12 @@
                         }
 
                         updateCalendar();
+                        $calContainer.find(`[data-date="${dateKey}"]`).trigger("focus");
                         updateInputValue();
 
-                        if (typeof settings.onSelectDate === 'function') {
+                        if (!initializing && typeof settings.onSelectDate === 'function') {
                             const dateObjects = selectedDatesState.map(dStr => {
-                                const [y, m, d] = dStr.split('-').map(Number);
-                                return new Date(y, m - 1, d);
+                                return parseDate(dStr);
                             });
                             const formattedDates = dateObjects.map(dObj => formatDate(dObj, settings.dateFormat));
                             let result = settings.mode === 'single' ? dateObjects[0] : dateObjects;
@@ -1026,9 +1097,9 @@
                 if (settings.showClock) {
                     initClock($clockContainer, settings, $, i18nData, function (timeState) {
                         currentTimeState = timeState;
-                        updateInputValue();
+                        if (!initializing) { cleared = false; updateInputValue(); }
 
-                        if (typeof settings.onSelectTime === 'function') {
+                        if (!initializing && typeof settings.onSelectTime === 'function') {
                             settings.onSelectTime(timeState);
                         }
                     });
@@ -1042,12 +1113,17 @@
                     const m = String(today.getMonth() + 1).padStart(2, '0');
                     const d = String(today.getDate()).padStart(2, '0');
 
-                    selectedDatesState = [`${y}-${m}-${d}`];
-                    currentDate = new Date();
+                    const todayKey = `${y}-${m}-${d}`;
+                    if (!isDateAllowed(todayKey, settings)) return;
+                    cleared = false;
+                    hoverDateState = null;
+                    selectedDatesState = [todayKey];
+                    currentDate = shiftMonth(today, 0);
                     if (settings.showCalendar && !isBirthdayMode) {
                         renderCalendar($calContainer, currentDate, settings, selectedDatesState, hoverDateState, $, i18nData);
                     }
                     updateInputValue();
+                    if (typeof settings.onSelectDate === 'function') settings.onSelectDate(settings.mode === 'single' ? parseDate(todayKey) : [parseDate(todayKey)], [formatDate(parseDate(todayKey), settings.dateFormat)]);
                 });
 
                 $card.on('click', '.dtp-btn-now', function (e) {
@@ -1059,14 +1135,18 @@
 
                 $card.on('click', '.dtp-btn-clear', function (e) {
                     e.stopPropagation();
+                    cleared = true;
                     selectedDatesState = [];
+                    $bdayContainer.trigger("dtp:clear");
+                    $clockContainer.trigger("dtp:clear");
+                    currentTimeState = null;
                     hoverDateState = null;
                     if (settings.showCalendar && !isBirthdayMode) {
                         renderCalendar($calContainer, currentDate, settings, selectedDatesState, hoverDateState, $, i18nData);
                     }
                     updateInputValue();
 
-                    if (typeof settings.onSelectDate === 'function') {
+                    if (!initializing && typeof settings.onSelectDate === 'function') {
                         settings.onSelectDate(null, []);
                     }
                 });
@@ -1091,10 +1171,20 @@
                     });
                 }
 
+                $card.add($target).on('keydown.dtp', function (e) {
+                    if (e.key === 'Escape' && isInput) {
+                        e.preventDefault();
+                        $target[0].focus();
+                        closePicker();
+                    }
+                });
+                if (selectedDatesState.length || (!settings.showCalendar && !isBirthdayMode && settings.showClock)) updateInputValue();
+                initializing = false;
                 instance = { open: openPicker, close: closePicker, destroy: destroyPicker };
                 $target.data('datetimepicker', instance);
+                if (isInput) activePickers.add(instance);
             });
         };
-    })(jQuery);
+    })($);
 
-})();
+})(jQuery);

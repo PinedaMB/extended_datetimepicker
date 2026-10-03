@@ -137,6 +137,15 @@
                             placeholder="YYYY-MM-DD,YYYY-MM-DD,...">
                     </div>
 
+                    <!-- Fecha predeterminada -->
+                    <div class="col-md-6">
+                        <label class="form-label fs-7 fw-semibold" for="cfg-defaultdate">Fecha predeterminada</label>
+                        <input type="text" class="form-control form-control-sm" id="cfg-defaultdate"
+                            placeholder="2026-10-15" aria-describedby="cfg-defaultdate-help">
+                        <div id="cfg-defaultdate-help" class="form-text">Usa YYYY-MM-DD. Para un rango o varias
+                            fechas, sepáralas con comas. Deja vacío para no preseleccionar ninguna fecha.</div>
+                    </div>
+
                     <!-- Default Time -->
                     <div class="col-md-6">
                         <label class="form-label fs-7 fw-semibold" for="cfg-defaulttime">Hora Predeterminada
@@ -263,123 +272,26 @@
                     <div class="mb-5">
                         <h5 class="fw-bold mb-3">Atributos y Opciones de Configuración (`options`)</h5>
                         <div class="table-responsive">
-                            <table class="table table-striped table-bordered align-middle fs-7">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th>Opción</th>
-                                        <th>Tipo</th>
-                                        <th>Valor por Defecto</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><code>mode</code></td>
-                                        <td><span class="badge bg-secondary">String</span></td>
-                                        <td><code>'single'</code></td>
-                                        <td>Modo de selección del calendario: <code>'single'</code>,
-                                            <code>'range'</code>, <code>'multiple'</code> o <code>'birthday'</code>.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>layout</code></td>
-                                        <td><span class="badge bg-secondary">String</span></td>
-                                        <td><code>'vertical'</code></td>
-                                        <td>Orientación visual del componente cuando coexisten calendario y reloj:
-                                            <code>'vertical'</code> u <code>'horizontal'</code>.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>themeColor</code></td>
-                                        <td><span class="badge bg-secondary">String</span></td>
-                                        <td><code>'success'</code></td>
-                                        <td>Tema de color Bootstrap asignado a los días activos y botones:
-                                            <code>'success'</code>, <code>'primary'</code>, <code>'danger'</code> o
-                                            <code>'warning'</code>.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>lang</code></td>
-                                        <td><span class="badge bg-secondary">String | Object</span></td>
-                                        <td><code>'es'</code></td>
-                                        <td>Idioma del plugin. Acepta código de idioma en cadena (<code>'es'</code>,
-                                            <code>'en'</code>) o un objeto i18n personalizado.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>showCalendar</code></td>
-                                        <td><span class="badge bg-secondary">Boolean</span></td>
-                                        <td><code>true</code></td>
-                                        <td>Muestra u oculta la sección del calendario.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>showClock</code></td>
-                                        <td><span class="badge bg-secondary">Boolean</span></td>
-                                        <td><code>true</code></td>
-                                        <td>Muestra u oculta la sección del selector de hora (Reloj).</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>doubleMonth</code></td>
-                                        <td><span class="badge bg-secondary">Boolean</span></td>
-                                        <td><code>false</code></td>
-                                        <td>Habilita la vista continua de dos meses paralelos (útil en modo
-                                            <code>'range'</code>).
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>format24h</code></td>
-                                        <td><span class="badge bg-secondary">Boolean</span></td>
-                                        <td><code>true</code></td>
-                                        <td>Formato del reloj: <code>true</code> para 24 horas (00-23) o
-                                            <code>false</code> para 12 horas con indicador AM/PM.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>defaultTime</code></td>
-                                        <td><span class="badge bg-secondary">String | Array</span></td>
-                                        <td><code>null</code></td>
-                                        <td>Hora inicial predeterminada en formato 24h. <code>'HH:mm'</code> para modo
-                                            sencillo, o <code>['HH:mm', 'HH:mm']</code> para modo rango.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>dateFormat</code></td>
-                                        <td><span class="badge bg-secondary">String</span></td>
-                                        <td><code>'YYYY-MM-DD'</code></td>
-                                        <td>Patrón de formateo para el valor del input. Ejemplos:
-                                            <code>'YYYY-MM-DD'</code>, <code>'DD/MM/YYYY'</code>,
-                                            <code>'MM/DD/YYYY'</code>.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>minDate</code> / <code>maxDate</code></td>
-                                        <td><span class="badge bg-secondary">String | Date</span></td>
-                                        <td><code>null</code></td>
-                                        <td>Limita el rango de fechas seleccionables en el calendario.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>disableWeekends</code></td>
-                                        <td><span class="badge bg-secondary">Boolean</span></td>
-                                        <td><code>false</code></td>
-                                        <td>Deshabilita automáticamente los días Sábado y Domingo.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>disabledDates</code></td>
-                                        <td><span class="badge bg-secondary">Array</span></td>
-                                        <td><code>[]</code></td>
-                                        <td>Lista de fechas específicas deshabilitadas en formato
-                                            <code>'YYYY-MM-DD'</code>.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>actions</code></td>
-                                        <td><span class="badge bg-secondary">Array</span></td>
-                                        <td><code>['close', 'today', 'now', 'clear']</code></td>
-                                        <td>Define los botones de acción visibles en el pie de página del componente.
-                                            Valores permitidos: <code>'close'</code>, <code>'today'</code>,
-                                            <code>'now'</code>, <code>'clear'</code>.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <!-- README-TABLE:OPTIONS:START -->
+<table class="table table-striped table-bordered align-middle fs-7"><thead class="table-primary"><tr><th scope="col">Option</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description / Allowed Values</th></tr></thead><tbody>
+<tr><td><code>mode</code></td><td><code>string</code></td><td><code>'single'</code></td><td>Selection mode: <code>'single'</code>, <code>'range'</code>, <code>'multiple'</code>, or <code>'birthday'</code>.</td></tr>
+<tr><td><code>layout</code></td><td><code>string</code></td><td><code>'vertical'</code></td><td>Panel orientation: <code>'vertical'</code> or <code>'horizontal'</code>.</td></tr>
+<tr><td><code>showCalendar</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Shows or hides the calendar section.</td></tr>
+<tr><td><code>showClock</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Shows or hides the clock section.</td></tr>
+<tr><td><code>themeColor</code></td><td><code>string</code></td><td><code>'success'</code></td><td>Bootstrap color theme (e.g., <code>'primary'</code>, <code>'success'</code>, <code>'danger'</code>).</td></tr>
+<tr><td><code>format24h</code></td><td><code>boolean</code></td><td><code>true</code></td><td>If <code>true</code>, uses 0–23 hour format; if <code>false</code>, uses 12-hour format with AM/PM toggle.</td></tr>
+<tr><td><code>defaultTime</code></td><td><code>string/array</code></td><td><code>null</code></td><td>Initial default time in 24h format (<code>'HH:mm'</code> for single, or <code>['HH:mm', 'HH:mm']</code> for range).</td></tr>
+<tr><td><code>minDate</code></td><td><code>string/null</code></td><td><code>null</code></td><td>Minimum selectable date in ISO format (<code>'YYYY-MM-DD'</code>).</td></tr>
+<tr><td><code>maxDate</code></td><td><code>string/null</code></td><td><code>null</code></td><td>Maximum selectable date in ISO format (<code>'YYYY-MM-DD'</code>).</td></tr>
+<tr><td><code>disableWeekends</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Disables Saturday and Sunday selection when set to <code>true</code>.</td></tr>
+<tr><td><code>disabledDates</code></td><td><code>array</code></td><td><code>[]</code></td><td>List of specific dates to block, e.g., <code>['2026-08-15', '2026-08-20']</code>.</td></tr>
+<tr><td><code>doubleMonth</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Renders two consecutive months side-by-side.</td></tr>
+<tr><td><code>dateFormat</code></td><td><code>string</code></td><td><code>'YYYY-MM-DD'</code></td><td>Output format for the input field (e.g., <code>'DD/MM/YYYY'</code>).</td></tr>
+<tr><td><code>lang</code></td><td><code>string/object</code></td><td><code>'es'</code></td><td>Language code (<code>'es'</code>, <code>'en'</code>) or a custom <code>i18n</code> translation object.</td></tr>
+<tr><td><code>selectedDates</code></td><td><code>array</code></td><td><code>[]</code></td><td>Initial dates in <code>YYYY-MM-DD</code> format, e.g., <code>['2026-10-15']</code>. See Setting a Default Date above.</td></tr>
+<tr><td><code>actions</code></td><td><code>array</code></td><td><code>['close', 'today', 'now', 'clear']</code></td><td>Visible footer buttons in the specified order. Use <code>[]</code> to hide all actions.</td></tr>
+</tbody></table>
+<!-- README-TABLE:OPTIONS:END -->
                         </div>
                     </div>
 
@@ -432,39 +344,14 @@
                     <div class="mb-4">
                         <h5 class="fw-bold mb-3">Callbacks / Eventos</h5>
                         <div class="table-responsive">
-                            <table class="table table-bordered align-middle fs-7">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Callback</th>
-                                        <th>Parámetros</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><code>onSelectDate</code></td>
-                                        <td><code>(dateObj, formattedDate)</code></td>
-                                        <td>Se dispara al seleccionar una o más fechas en el calendario. Devuelve el
-                                            objeto <code>Date</code> nativo y la cadena formateada.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>onSelectTime</code></td>
-                                        <td><code>(timeState)</code></td>
-                                        <td>Se dispara al modificar la hora o minutos en el reloj. Devuelve un objeto
-                                            con <code>{ hour, minute, ampm }</code>.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>onOpen</code></td>
-                                        <td><code>()</code></td>
-                                        <td>Se dispara inmediatamente después de desplegar el selector.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>onClose</code></td>
-                                        <td><code>()</code></td>
-                                        <td>Se dispara cuando el selector desplegable se oculta.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <!-- README-TABLE:CALLBACKS:START -->
+<table class="table table-striped table-bordered align-middle fs-7"><thead class="table-primary"><tr><th scope="col">Callback</th><th scope="col">Default</th><th scope="col">Parameters and behavior</th></tr></thead><tbody>
+<tr><td><code>onOpen</code></td><td>No-op function</td><td>No arguments. Runs when the picker opens. <code>this</code> is the target element.</td></tr>
+<tr><td><code>onClose</code></td><td>No-op function</td><td>No arguments. Runs when the picker closes, including when another input picker opens. <code>this</code> is the target element.</td></tr>
+<tr><td><code>onSelectDate</code></td><td><code>null</code></td><td><code>(dateObj, formattedDates)</code>: a <code>Date</code> for single/birthday, an array of dates for range/multiple, and an array of formatted strings. Clear returns <code>(null, [])</code>. Today also invokes this callback.</td></tr>
+<tr><td><code>onSelectTime</code></td><td><code>null</code></td><td><code>(timeState)</code>: <code>{ hour, minute }</code> in 24-hour mode, with <code>ampm</code> in 12-hour mode. Range mode returns an array with start and end times.</td></tr>
+</tbody></table>
+<!-- README-TABLE:CALLBACKS:END -->
                         </div>
                     </div>
 
@@ -544,6 +431,10 @@
                         .split(',')
                         .map(dateStr => dateStr.trim())
                         .filter(dateStr => dateStr !== ''),
+                    selectedDates: $('#cfg-defaultdate').val()
+                        .split(',')
+                        .map(dateStr => dateStr.trim())
+                        .filter(Boolean),
                     defaultTime: parsedDefaultTime,
                     actions: selectedActions, // <--- ACCIONES DINÁMICAS VINCULADAS
                     onSelectDate: function (dateObj, formatted) {
@@ -556,6 +447,7 @@
 
                 // Uso del método público 'destroy' para limpieza antes de re-instanciar
                 $input.extendedDateTimePicker('destroy');
+                $input.val('');
                 $input.extendedDateTimePicker(config);
 
                 $divContainer.extendedDateTimePicker('destroy');

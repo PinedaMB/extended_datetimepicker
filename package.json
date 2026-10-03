@@ -13,7 +13,10 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c && npm run copy:docs",
-    "copy:docs": "copyfiles -u 1 dist/* docs/"
+    "copy:docs": "copyfiles -u 1 dist/* docs/ && npm run docs:sync",
+    "test": "node --test",
+    "docs:sync": "node scripts/sync-docs.js",
+    "docs:check": "node scripts/sync-docs.js --check"
   },
   "keywords": [
     "jquery-plugin",
@@ -35,5 +38,10 @@
     "copyfiles": "^2.4.1",
     "rollup": "^4.0.0",
     "rollup-plugin-postcss": "^4.0.2"
+  },
+  "module": "dist/jquery.extended.datetimepicker.esm.js",
+  "exports": {
+    ".": "./dist/jquery.extended.datetimepicker.esm.js",
+    "./dist/*": "./dist/*"
   }
 }

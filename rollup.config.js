@@ -2,6 +2,12 @@ import terser from '@rollup/plugin-terser';
 import postcss from 'rollup-plugin-postcss';
 
 export default [
+    {
+        input: 'src/js/jquery.extended.datetimepicker.js',
+        external: ['jquery'],
+        output: { file: 'dist/jquery.extended.datetimepicker.esm.js', format: 'es' },
+        plugins: [postcss({ extract: 'jquery.extended.datetimepicker.css' })]
+    },
     // 1. Versión sin minificar (para desarrollo / debugging)
     {
         input: 'src/js/jquery.extended.datetimepicker.js',

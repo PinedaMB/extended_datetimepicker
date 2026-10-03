@@ -1,3 +1,4 @@
+import { isDateAllowed } from './dates.js';
 export function renderCalendar($container, currentDate, settings, selectedDates, hoverDate, $, i18nData) {
     if (settings.doubleMonth) {
         const nextMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
@@ -49,14 +50,14 @@ function buildSingleMonthHtml(dateObj, settings, selectedDates, hoverDate, i18nD
         <div class="d-flex align-items-center justify-content-between mb-3 w-100">
             <div>
                 ${showPrev ? `
-                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-prev p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-prev p-0 d-flex align-items-center justify-content-center" aria-label="${i18nData.calendar.previous || 'Previous month'}" style="width: 32px; height: 32px;">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
                     </button>` : '<div style="width: 32px;"></div>'}
             </div>
             <div class="fw-bold text-body fs-6 text-center">${monthNames[month]} ${year}</div>
             <div>
                 ${showNext ? `
-                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-next p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <button type="button" class="btn btn-sm bg-body-tertiary text-body rounded-circle dtp-next p-0 d-flex align-items-center justify-content-center" aria-label="${i18nData.calendar.next || 'Next month'}" style="width: 32px; height: 32px;">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1 .708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
                     </button>` : '<div style="width: 32px;"></div>'}
             </div>
@@ -91,12 +92,7 @@ function buildSingleMonthHtml(dateObj, settings, selectedDates, hoverDate, i18nD
 
             const currentObj = new Date(year, month, dayCount);
             const dayOfWeek = currentObj.getDay();
-            let isDisabled = false;
-
-            if (settings.disableWeekends && (dayOfWeek === 0 || dayOfWeek === 6)) isDisabled = true;
-            if (settings.minDate && dateKey < settings.minDate) isDisabled = true;
-            if (settings.maxDate && dateKey > settings.maxDate) isDisabled = true;
-            if (Array.isArray(settings.disabledDates) && settings.disabledDates.includes(dateKey)) isDisabled = true;
+            const isDisabled = !isDateAllowed(dateKey, settings);
 
             let isSelected = selectedDates.includes(dateKey);
             let isInRange = false;
@@ -137,9 +133,9 @@ function buildSingleMonthHtml(dateObj, settings, selectedDates, hoverDate, i18nD
 
             daysGridHtml += `
                 <div class="py-1 d-flex align-items-center justify-content-center">
-                    <div class="${classes}" style="width: 32px; height: 32px; ${isDisabled ? '' : 'cursor: pointer;'}" data-date="${dateKey}">
+                    <button type="button" ${isDisabled ? 'disabled' : ''} aria-label="${dateKey}" aria-pressed="${isSelected}" class="border-0 ${classes}" style="width: 32px; height: 32px; ${isDisabled ? '' : 'cursor: pointer;'}" data-date="${dateKey}">
                         ${dayCount}
-                    </div>
+                    </button>
                 </div>`;
             dayCount++;
         } else {

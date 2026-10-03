@@ -5,10 +5,11 @@ export const i18n = {
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
             weekdaysShort: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
+            title: "Fecha y hora", previous: "Mes anterior", next: "Mes siguiente",
             rangeSeparator: "a"
         },
-        clock: { title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM", start: "Hora inicio", end: "Hora fin" },
-        birthday: { title: "Fecha de Nacimiento", day: "Día", month: "Mes", year: "Año" },
+        clock: { increase: "Aumentar", decrease: "Disminuir", title: "Reloj", hour: "Hora", minute: "Minuto", ampm: "AM / PM", start: "Hora inicio", end: "Hora fin" },
+        birthday: { increase: "Aumentar", decrease: "Disminuir", title: "Fecha de Nacimiento", day: "Día", month: "Mes", year: "Año" },
         actions: { today: "Hoy", now: "Ahora", clear: "Limpiar", done: "Aceptar", close: "Cerrar" }
     },
     en: {
@@ -17,6 +18,7 @@ export const i18n = {
             months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
             weekdaysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+            title: "Date and time", previous: "Previous month", next: "Next month",
             rangeSeparator: "to"
         },
         clock: { title: "Clock", hour: "Hour", minute: "Minute", ampm: "AM / PM", start: "Start Time", end: "End Time" },

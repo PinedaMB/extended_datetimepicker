@@ -15,7 +15,7 @@ export function initClock($parent, settings, $, i18nData, onTimeChange) {
     const parseTime = (timeStr, defaultH, defaultM) => {
         if (typeof timeStr === 'string') {
             const parts = timeStr.split(':');
-            if (parts.length === 2) {
+            if (parts.length === 2 && /^\d{2}:\d{2}$/.test(timeStr)) {
                 const h = parseInt(parts[0], 10);
                 const m = parseInt(parts[1], 10);
                 if (!isNaN(h) && !isNaN(m) && h >= 0 && h <= 23 && m >= 0 && m <= 59) {
@@ -198,5 +198,12 @@ export function initClock($parent, settings, $, i18nData, onTimeChange) {
         updateDisplay();
     });
 
+    for (const field of ['hour', 'minute']) {
+        $clockWrapper.find('.dtp-input-' + field).attr({ 'aria-label': lang[field], inputmode: 'numeric' });
+        $clockWrapper.find('.dtp-btn-up-' + field).attr('aria-label', (lang.increase || 'Increase') + ' ' + lang[field]);
+        $clockWrapper.find('.dtp-btn-down-' + field).attr('aria-label', (lang.decrease || 'Decrease') + ' ' + lang[field]);
+    }
+    $clockWrapper.find('.dtp-btn-toggle-ampm').attr('aria-label', lang.ampm);
+    $parent.on('dtp:clear', () => { $clockWrapper.find('input').val(''); $clockWrapper.find('.dtp-btn-ampm-val').text('—'); });
     updateDisplay();
 }

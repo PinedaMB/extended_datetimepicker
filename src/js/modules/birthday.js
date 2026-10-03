@@ -1,3 +1,4 @@
+import { parseDate, isDateAllowed } from './dates.js';
 export function initBirthday($parent, settings, $, i18nData, onDateChange) {
     let $birthdayWrapper = $parent.find('.dtp-birthday-wrapper');
     const lang = i18nData.birthday;
@@ -42,7 +43,8 @@ export function initBirthday($parent, settings, $, i18nData, onDateChange) {
     }
 
     const currentYear = new Date().getFullYear();
-    let state = { day: 1, month: 0, year: 2000 };
+    const initial = parseDate(settings.selectedDates[0]) || parseDate(settings.minDate) || new Date(2000, 0, 1);
+    let state = { day: initial.getDate(), month: initial.getMonth(), year: initial.getFullYear() };
 
     const $inputDay = $birthdayWrapper.find('.dtp-input-day');
     const $btnMonth = $birthdayWrapper.find('.dtp-btn-month-val');
@@ -54,7 +56,10 @@ export function initBirthday($parent, settings, $, i18nData, onDateChange) {
         if (typeof onDateChange === 'function') {
             const formattedMonth = String(state.month + 1).padStart(2, '0');
             const formattedDay = String(state.day).padStart(2, '0');
-            onDateChange(`${state.year}-${formattedMonth}-${formattedDay}`, state);
+            const key = String(state.year).padStart(4, '0') + '-' + formattedMonth + '-' + formattedDay;
+            const valid = state.year >= 1900 && state.year <= currentYear && isDateAllowed(key, settings);
+            $birthdayWrapper.find('input').attr('aria-invalid', String(!valid));
+            if (valid) onDateChange(key, { ...state });
         }
     };
 
@@ -90,7 +95,8 @@ export function initBirthday($parent, settings, $, i18nData, onDateChange) {
     $inputYear.off('input').on('input', function () {
         let val = parseInt($(this).val(), 10);
         if (!isNaN(val)) {
-            state.year = val;
+            state.year = Math.max(1900, Math.min(currentYear, val));
+            state.day = Math.min(state.day, getMaxDays(state.month, state.year));
             notifyChange();
         }
     });
@@ -144,5 +150,14 @@ export function initBirthday($parent, settings, $, i18nData, onDateChange) {
         updateDisplay();
     });
 
-    updateDisplay();
+    $inputDay.attr({ 'aria-label': lang.day, inputmode: 'numeric' });
+    $inputYear.attr({ 'aria-label': lang.year, inputmode: 'numeric' });
+    for (const field of ['day', 'month', 'year']) {
+        $birthdayWrapper.find('.dtp-btn-up-' + field).attr('aria-label', (lang.increase || 'Increase') + ' ' + lang[field]);
+        $birthdayWrapper.find('.dtp-btn-down-' + field).attr('aria-label', (lang.decrease || 'Decrease') + ' ' + lang[field]);
+    }
+    $parent.on('dtp:clear', () => { $inputDay.val(''); $inputYear.val(''); $btnMonth.text('—'); });
+    $inputDay.val(String(state.day).padStart(2, '0'));
+    $inputYear.val(state.year);
+    $btnMonth.text(months[state.month]);
 }
